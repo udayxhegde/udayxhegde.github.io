@@ -3,7 +3,7 @@ layout: post
 current: post
 navigation: True
 title: Managing Workload Identities
-date: 2021-06-22 08:00:00
+date: 2021-06-22 07:00:00
 class: post-template
 subclass: 'post'
 author: uday
