@@ -6,7 +6,7 @@
 name: Identity for the enterprise
 
 # Short bio or description (displayed in the header)
-description: A blog on enterprise identity scenarios and capabilities
+description: A personal blog on enterprise identity scenarios and capabilities
 
 # URL of your avatar or profile pic (you could use your GitHub profile pic)
 avatar: https://avatars.githubusercontent.com/udayxhegde
@@ -35,6 +35,7 @@ footer-links:
 # Enter your Disqus shortname (not your username) to enable commenting on posts
 # You can find your shortname on the Settings page of your Disqus account
 disqus: 
+
 # Enter your Google Analytics web tracking code (e.g. UA-2110908-2) to activate tracking
 google_analytics: 257452762
 
