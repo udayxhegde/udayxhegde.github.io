@@ -24,6 +24,7 @@ Microsoft is using the term "workload identity" to refer to the identities neede
 1. An application that is able to access Microsoft Graph based on admin or user consent, either on behalf of the user or on its own
 2. A Managed identity used by a developer to allow a service to access an Azure resource such as Azure KeyVault or Azure Storage.
 3. A Service prinicipal used by a developer to enable CI/CD with GitHub Actions.
+
 “Workload identity” is a term that some industry analysts and product vendors are already using. To put these identities in perspective of the broader landscape of identities, it is useful to look at the taxonomy of all identities in Azure AD.
 
 ![Taxonomy of identities in Azure AD](/images/aad_taxonomy.png)
