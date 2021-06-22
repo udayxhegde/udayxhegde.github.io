@@ -35,17 +35,13 @@ These are the ones we are most familiar with. We use them ourselves every day, a
 #### Machine Identities (or non-human identities).
 
 Machine identity is a term that is used by some industry analysts as well as product vendors to cover all the scenarios for non-human identities. We can classify them further into four broad categories. Over time, it is likely that these categories may overlap or even converge. 
-##### Mobile or Desktop Devices
- Devices that we carry with us, either mobile or desktop, need an identity. In Azure AD, this identity is used to enable scenarios such as conditional access requiring a compliant device.  
+- Mobile or Desktop Devices: Devices that we carry with us, either mobile or desktop, need an identity. In Azure AD, this identity is used to enable scenarios such as conditional access requiring a compliant device.  
 
-##### Internet of Things (IoT)
-These devices typically act on their own, unlike a handheld device or a desktop.
+- Internet of Things (IoT): These devices typically act on their own, unlike a handheld device or a desktop.
 
-##### Workload Identities
-These are the identities referred to in this blog. They represent identities needed by applications, services and scripts to authenticate and access resources. 
+- Workload Identities: These are the identities referred to in this blog. They represent identities needed by applications, services and scripts to authenticate and access resources. 
 
-##### Robotic Process Automation (RPA) 
-RPA is a relatively new trend where human-based processes are being automated. Some of these scenarios end up needing a user identity, primarily to deal with how software is licensed. And in some other scenarios, they may use one of the different types of machine identities.
+- Robotic Process Automation (RPA) : RPA is a relatively new trend where human-based processes are being automated. Some of these scenarios end up needing a user identity, primarily to deal with how software is licensed. And in some other scenarios, they may use one of the different types of machine identities.
 
 
 ### So, what are some issues customers face with workload identities?
