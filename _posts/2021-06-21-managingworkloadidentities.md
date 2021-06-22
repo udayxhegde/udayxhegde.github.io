@@ -20,7 +20,11 @@ Most cloud identity systems have a good level of maturity when it comes to secur
 
 First, let’s start with the terminology. There is no consistent terminology in the industry today for these “software identities”. In Azure AD, depending on what they are used for, they are called application identities, managed identities or service principals. In Windows Active Directory, there are service accounts which is a term that also shows up in many other platforms. The plethora of names leads to confusing outcomes especially when people sometimes use different terminologies to mean the same thing. 
 
-Microsoft is using the term "workload identity" to refer to the identities needed by software workloads. Some example of workload identities in Azure AD are application identities that allow delegated access to user data in Microsoft Graph, managed identities used by developers in Azure and service principals used by developers to provision CI/CD in GitHub Actions. “Workload identity” is a term that some industry analysts and product vendors are already using. To put these identities in perspective of the broader landscape of identities, it is useful to look at the taxonomy of all the identities in Azure AD.
+Microsoft is using the term "workload identity" to refer to the identities needed by software workloads. Here are some example scenarios for workload identities: 
+1. An application that is able to access Microsoft Graph based on admin or user consent, either on behalf of the user or on its own
+2. A Managed identity used by a developer to allow a service to access an Azure resource such as Azure KeyVault or Azure Storage.
+3. A Service prinicipal used by a developer to enable CI/CD with GitHub Actions.
+“Workload identity” is a term that some industry analysts and product vendors are already using. To put these identities in perspective of the broader landscape of identities, it is useful to look at the taxonomy of all identities in Azure AD.
 
 ![Taxonomy of identities in Azure AD](/images/aad_taxonomy.png)
 
