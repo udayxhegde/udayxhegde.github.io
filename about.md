@@ -4,5 +4,5 @@ title: About
 permalink: /about/
 ---
 
-I am an architect in the identity product team at Microsoft
+Hello! I am Uday Hegde, an architect in the identity product team at Microsoft
 
