@@ -20,7 +20,7 @@ Most cloud identity systems have a good level of maturity when it comes to secur
 
 First, let’s start with the terminology. There is no consistent terminology in the industry today for these “software identities”. In Azure AD, depending on what they are used for, they are called application identities, managed identities or service principals. In Windows Active Directory, there are service accounts which is a term that also shows up in many other platforms. The plethora of names leads to confusing outcomes especially when people sometimes use different terminologies to mean the same thing. 
 
-Microsoft is using the term "workload identity" to refer to the identities needed by software workloads. Here are some example scenarios for workload identities: 
+Microsoft is using the term "workload identity" to refer to the identities needed by software workloads. Here are some sample scenarios that need workload identities: 
 1. An application that is able to access Microsoft Graph based on admin or user consent, either on behalf of the user or on its own
 2. A Managed identity used by a developer to allow a service to access an Azure resource such as Azure KeyVault or Azure Storage.
 3. A Service prinicipal used by a developer to enable CI/CD with GitHub Actions.
@@ -75,4 +75,4 @@ We need to provide capabilities that allow companies to assume breach and plan a
 It is best to avoid secrets in the first place if possible, and towards that, Microsoft has made significant investments in “Managed identities” for Azure. The credentials for these identities are managed by the Azure platform, storing them securely and rotating regularly. While this will avoid secrets in some scenarios, there are others where a secret is still necessary. So it becomes important to use vaulting solutions such as Azure KeyVault or other tools which can help with rotating these credentials and storing them securely.
 
 ### In conclusion
-Recently Microsoft announced the [public preview of access reviews](https://techcommunity.microsoft.com/t5/azure-active-directory-identity/introducing-azure-ad-access-reviews-for-service-principals/ba-p/1942488) for service principals. Expect to see more capabilities in this area for customers to better manage, govern and secure workload identities.
+Microsoft recently announced the [public preview of access reviews](https://techcommunity.microsoft.com/t5/azure-active-directory-identity/introducing-azure-ad-access-reviews-for-service-principals/ba-p/1942488) for service principals. Expect to see more capabilities in this area for customers to better manage, govern and secure workload identities.
