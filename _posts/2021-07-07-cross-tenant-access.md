@@ -95,7 +95,7 @@ At this point, you have completed all the necessary configurations needed for th
 
 The main special sauce you need in the application code is the following:
 
-1. Configuration for all the tenants and instances of Azure resources the application should access. This is needed since we can't figure this out dynamically (at least not yet in Azure AD).
+1. List of tenants and instances of Azure resources the application should access. This is needed since we can't figure this out dynamically (at least not yet in Azure AD).
 
 2. Authenticate the application at the tenant endpoint (https://login.microsoftonline.com/{tenantId}) using the OAuth Client Credentials grant flow. Both MSAL and Azure/identity SDK have support for this flow. 
 
