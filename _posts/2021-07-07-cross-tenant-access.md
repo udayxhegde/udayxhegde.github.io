@@ -38,7 +38,7 @@ Now that we briefly looked at how a typical multi-tenant app works, let's consid
 
 1. We now need to tell the app ahead of time which tenants it needs to access. Unfortunately, there is no capability right now to detect in which tenants the application has been added.
 
-2. Unlike Microsoft Graph, which is a single instance per tenant, Azure resources are different: there are multiple instances of a single resource in a tenant. So you also need to identify which specific instance of an Azure resource the tenant should be accessing.
+2. Unlike Microsoft Graph, which is a single instance per tenant, Azure resources are different: there are multiple instances of a single resource in a tenant. So you also need to identify which specific instance of an Azure resource the application should access.
 
 3. The user's authentication when accessing the application served the purpose of authenticating both the user and the application. In the absence of the user, we need to add credentials to the application for it to authenticate as itself.
 
