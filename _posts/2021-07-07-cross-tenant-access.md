@@ -102,3 +102,4 @@ The main special sauce you need in the application code is the following:
 To see a very rudimentary example that illustrates the code in Node, see [this github repo](https://github.com/udayxhegde/multitenant-daemonapp-node). It shows how you can achieve this for both Microsoft Graph and Azure KeyVault.
 
 
+Comments/feedback/questions? [DM me on twitter](https://twitter.com/messages/compose?recipient_id=1446741344)

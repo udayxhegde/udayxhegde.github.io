@@ -76,3 +76,5 @@ It is best to avoid secrets in the first place if possible, and towards that, Mi
 
 ### In conclusion
 Microsoft recently announced the [public preview of access reviews](https://techcommunity.microsoft.com/t5/azure-active-directory-identity/introducing-azure-ad-access-reviews-for-service-principals/ba-p/1942488) for service principals. Expect to see more capabilities in this area for customers to better manage, govern and secure workload identities.
+
+Comments/feedback/questions? [DM me on twitter](https://twitter.com/messages/compose?recipient_id=1446741344)
