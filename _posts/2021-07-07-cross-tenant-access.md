@@ -8,6 +8,7 @@ class: post-template
 subclass: 'post'
 author: uday
 ---
+Sometimes you may need to access an Azure resource in a different tenant from where your application is running. This blog post explains how you can achieve that.
 
 ## Introduction
 
