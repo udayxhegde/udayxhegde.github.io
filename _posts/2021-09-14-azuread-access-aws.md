@@ -24,7 +24,8 @@ Go to the Azure portal and create a "User assigned managed identity", and copy i
 ## Setting up AWS federation with your Azure AD Tenant
 ### Create an identity provider in AWS
 Head over to the AWS console, and select the IAM service. Click on "Identity providers", and "Add provider". Choose the "OpenID Connect" option.
-In the provider URL, enter https://sts.windows.net/<your-tenant-id>. If you don't have your tenant id handy, see [finding your Azure AD tenant id](https://docs.microsoft.com/en-us/azure/active-directory/fundamentals/active-directory-how-to-find-tenant).
+In the provider URL, enter https://sts.windows.net/[your-tenant-id]. If you dont have your tenant id handy, see [how to find your tenant id](https://docs.microsoft.com/en-us/azure/active-directory/fundamentals/active-directory-how-to-find-tenant).
+
 
 Click on "Get Thumbprint". I am not sure why AWS is acquiring this statically. I would have expected AWS to follow the chain of trust dynamically as needed.
 ![Add an identity provider](/images/aad_aws_federate/awsidentityprovider_img.jpg)
