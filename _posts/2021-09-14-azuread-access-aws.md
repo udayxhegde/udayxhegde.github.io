@@ -90,6 +90,7 @@ You have now completed all the configurations needed to try this out end to end.
 Let's look at a code sample to get Azure AD tokens and provide that to AWS.
 
 Assign the managed identity to your Azure App Service (or Functions) where your code is running. Then use the Azure Identity SDK to get a token for that managed identity with the audience being the client id of your managed identity. Here's a code snippet using Node.js
+
 ```javascript
     const identity = require("@azure/identity");
     const clientId = "<client id of managed identity>"
@@ -99,6 +100,7 @@ Assign the managed identity to your Azure App Service (or Functions) where your 
                     { ManagedIdentityClientId : clientId });
     const token = credential.getToken(audience);
 ```
+
 
 Note that this is the OAuth Confidential Client flow: you get access tokens, but no refresh tokens. You need to make sure this token is refreshed regularly before it expires. The instructions for how to do this vary depending on the AWS SDK you use.
 For example, when using the aws-sdk for Node.js, here's a snippet I used
@@ -148,8 +150,12 @@ Finally, we need to assign our managed identity to this role. Unfortunately, Azu
 For this step you need 3 things: the object id of the managed identity, the identity of the app role you created, and the object id of the service principal that represents the application you created. You can find this last part by going to the Enterprise Applications on the Azure AD portal, and search for the application name you just created. The object you find is the service principal of the application, and you can look up the object id of that service principal.
 
 You will be executing a PowerShell cmdlet that looks like this:
-```
-New-AzureADServiceAppRoleAssignment -ObjectId <object id of your managed identity> -Id <identity of the app role> -PrincipalId <object id of managed identity again!> -ResourceId <object id of the service principal representing the application in your tenant>
+```{
+New-AzureADServiceAppRoleAssignment \
+     -ObjectId <object id of your managed identity> \
+     -Id <identity of the app role> \
+     -PrincipalId <object id of managed identity again!> \
+     -ResourceId <object id of the application service principal in your tenant>
 ```
 
 Now configure the AWS role appropriately as follows:
