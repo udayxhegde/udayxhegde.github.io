@@ -10,17 +10,17 @@ author: uday
 ---
 When developers build services that programmatically access AWS resources, they need to provision AWS credentials to these services. Since storing these credentials securely and rotating them regularly is a challenge, Azure developers prefer to use a managed identity in Azure for these scenarios. This allows them to write code without having to manage credentials either in AWS or Azure AD.  While AWS documentation explains how users from specific identity providers can access AWS resources, it lacks concrete examples for service principals in Azure AD. This blog post provides a walkthrough of how you can configure managed identities in your Azure tenant with access to AWS resources.
 
-# Introduction
+## Introduction
 Amazon Web Services (AWS) has support and documentation for federating users from any identity provider, and granting them access to AWS resources using [AssumeRoleWithWebIdentity](https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html). We will use this concept and use the Azure AD tokens issued to a managed identity to access AWS resources.
 
-## First, the concepts we will use to set this up
+### First, the concepts we will use to set this up
 
 Before we jump into the specifics, let's look at a few concepts we will be using and understand them well. This will ensure that we can set this up securely and avoid any surprises later on.
 
-### Azure AD Managed Identity
+#### Azure AD Managed Identity
 The Azure AD managed identity is an Azure resource. It provides you with an identity where the credentials are managed by the Azure platform. When you run code in any of the Azure compute resources, such as App Service, Functions etc, you can use the managed identity to access resources you have granted that identity. Using these identities, you avoid having to store, secure, rotate or manage the credentials on your own.
 
-### Azure AD Tokens
+#### Azure AD Tokens
 Azure AD supports the open standard OAuth protocol to issue access tokens, as well as refresh tokens in many cases. When using managed identities to get tokens, we will be using the OAuth Confidential Client flow which only has access tokens. The expectation in this OAuth flow is that the client can detect when the token is expiring and get new access tokens as needed.
 
 The OAuth token has a few components we need to familiarize with:
@@ -36,7 +36,7 @@ This is the "exp" claim in the OAuth token and represents how long the token is 
 #### Role claims
 OAuth also allows the token to contain other custom claims. Azure AD access tokens include a "roles" claim which will include all the app roles assigned to the "subject" to whom the token was issued. See [recieve app roles in tokens](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-add-app-roles-in-azure-ad-apps).
 
-### AWS AssumeRoleWithWebIdentity
+#### AWS AssumeRoleWithWebIdentity
 AWS allows you to configure tokens issued by any identity provider to assume a role in AWS, and access AWS resources granted to that role.
 
 #### Trust Relationship
@@ -44,7 +44,7 @@ This is the AWS policy document where you can configure the specific authorizati
 
 There are specific keys you can use in a trust relationship. See [the available keys for AWS web identity federation](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_iam-condition-keys.html#condition-keys-wif) for more details.
 
-## Putting this all together
+### Putting this all together
 So now we have refreshed ourselves on how Azure AD tokens behave and the possibility of using the token claims in the AWS trust relationship, let's look at what we need to consider to make this secure. Our goal is to ensure that the AWS resources can only be accessed by the identities we have chosen.
 
 First, we need to determine whether we want to achieve this with a single managed identity or we need multiple managed identities to assume the AWS role. 
@@ -55,14 +55,14 @@ If we want to achieve this with a single managed identity, we can take a very si
 
 However, if you need more than one identity in your tenant assuming the same AWS role, you can achieve this using an Azure AD Application dedicated for this purpose and to which multiple identities are assigned. Ideally, you would be able to use the audience claim along with the role claim when authorizing these identities to assume the AWS role. However the AWS conditions only seem to support aud and sub, so you need to work around this restriction by using capabilities in the Azure AD application model, which we will look at later in this blog.
 
-# Scenario 1: Assuming AWS role from a single managed identity in your Azure subscription.
+## Scenario 1: Using one managed identity
 First, let's take the simple approach and set this up using a single identity. 
 
 Go to the Azure portal and create a "User assigned managed identity", and copy its client id and object id, you will need these later.
 ![Adding a managed identity](/images/aad_aws_federate/aadmanagedidentity_img.jpg)
 
-## Setting up AWS federation with your Azure AD Tenant
-### Create an identity provider in AWS
+### Setting up AWS federation with your Azure AD Tenant
+#### Create an identity provider in AWS
 Head over to the AWS console, and select the IAM service. Click on "Identity providers", and "Add provider". Choose the "OpenID Connect" option.
 In the provider URL, enter https://sts.windows.net/[your-tenant-id]. If you don't have your tenant id handy, see [how to find your tenant id](https://docs.microsoft.com/en-us/azure/active-directory/fundamentals/active-directory-how-to-find-tenant).
 
@@ -73,7 +73,7 @@ Click on "Get Thumbprint". I am not sure why AWS is acquiring this statically. I
 Use the client id of your managed identity as the audience and click on "Add Provider".
 ![Configure with audience](/images/aad_aws_federate/awsidentityprovider1_img.jpg)
 
-### Assign a role to that identity provider
+#### Assign a role to that identity provider
 Next, you need to create an AWS role and assign it to this provider. This will allow you to use the Azure AD tokens to assume this AWS role. Click on the identity provider you just created, and click on "Assign role", and "Create a new role".
 
 In "Select type of trusted identity", you should see AWS has already picked "Web identity" and populated your identity provider. Select the audience you just configured on the provider. (Note: You can configure this identity provider with additional audiences if you need to.)
@@ -125,7 +125,7 @@ Anyone who can get a token for this audience in your tenant will be able to acce
   ]
 }
 ```
-## Finally, access the AWS resources from your service!
+### Finally, access the AWS resources from your service!
 You have now completed all the configurations needed to try this out end to end.
 Let's look at a code sample to get Azure AD tokens and provide that to AWS.
 
@@ -163,7 +163,7 @@ public tokenRefresh = async() =>{
 ~~~
 
 
-# Scenario 2:using an Azure AD Application.
+## Scenario 2:using an Azure AD Application.
 You can also use an Azure AD application and use the Azure AD App model capabilities for some additional flexibility: especially in being able to allow multiple managed identities to assume the AWS role.
 
  By configuring your Azure AD application to require user assignment, and assigning your selected managed identities to an app role, you can limit only those identities to get a token with this audience. Ideally, we could have used the roles claim in the token to enforce only those identities can assume the AWS role. However, AWS does not support custom claims in the token, so we don't have that option. Instead, you need to closely guard that application since assigning identities to any other roles on that application will also allow them to assume the AWS role.
