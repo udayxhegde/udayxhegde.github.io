@@ -8,18 +8,17 @@ class: post-template
 subclass: 'post'
 author: uday
 ---
-Azure developers who also use AWS and need programmatic access to AWS resources can use Azure managed identities and achieve their scenario without needing to manage credentials, either in AWS or Azure AD. While AWS documentation explains how access to AWS resources can be achieved for users from certain identity providers, it is lacking concrete examples for achieving this using service principals in Azure AD. This blog post provides a walkthrough of how this can be achieved.
+When developers build services that programmatically access AWS resources, they need to provision AWS credentials to these services. Since storing these credentials securely and rotating them regularly is a challenge, Azure developers prefer to use a managed identity in Azure for these scenarios. This allows them to write code without having to manage credentials either in AWS or Azure AD.  While AWS documentation explains how users from specific identity providers can access AWS resources, it lacks concrete examples for service principals in Azure AD. This blog post provides a walkthrough of how you can configure managed identities in your Azure tenant with access to AWS resources.
 
 ## Introduction
-Amazon Web Services (AWS) has support and documentation for federating users from any identity provider, and granting them access to AWS resources using [AssumeRoleWithWebIdentity](https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html). Also see [the general pattern of web identity federation](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_oidc.html) in AWS.
-
-Developers who need to build services that access AWS resources, such as S3 or DyanmoDB, can achieve this scenario using Azure AD identities and without needing to manage any credentials. They can assign a managed identity to their service running in Azure and use the Azure AD tokens issued to the managed identity to access AWS resources.
+Amazon Web Services (AWS) has support and documentation for federating users from any identity provider, and granting them access to AWS resources using [AssumeRoleWithWebIdentity](https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html). We will use this concept and use the Azure AD tokens issued to a managed identity to access AWS resources.
 
 ### First let's understand the concepts we will use to set this up
-Before we jump into the specifics on how you can achieve this, let's look at a few concepts we will be using and understand them well. This will help make sure that we can set this up securely and avoid any surprises later on.
+
+Before we jump into the specifics, let's look at a few concepts we will be using and understand them well. This will ensure that we can set this up securely and avoid any surprises later on.
 
 #### Azure AD Managed Identity
-The Azure AD managed identity is an Azure resource. It provides you with an identity where the credentials are managed by the Azure platform. When you run code in any of the Azure compute resources, such as App Service, Functions etc, you can use the managed identity to access resources you have granted that identity, without needing to store, secure, rotate or manage the credentials for that identity on your own.
+The Azure AD managed identity is an Azure resource. It provides you with an identity where the credentials are managed by the Azure platform. When you run code in any of the Azure compute resources, such as App Service, Functions etc, you can use the managed identity to access resources you have granted that identity. Using these identities, you avoid having to store, secure, rotate or manage the credentials on your own.
 
 #### Azure AD Tokens
 Azure AD supports the open standard OAuth protocol to issue access tokens, as well as refresh tokens in many cases. When using managed identities to get tokens, we will be using the OAuth Confidential Client flow which only has access tokens. The expectation in this OAuth flow is that the client can detect when the token is expiring and get new access tokens as needed.
@@ -29,7 +28,7 @@ The OAuth token has a few components we need to familiarize with:
 This is the "sub" claim in the OAuth access token and represents the identity to whom this token was issued. 
 
 ##### Audience claim
-This is the "aud" claim in the OAuth token and represents the identity of the intended recipient of the token. When accepting tokens, it is important to only accept tokens intended for you to avoid security issues. If a token was intended for another recipient, and you are willing to accept it, nothing stops that recipient from sending you tokens sent to them and fooling you into thinking it came from the "subject".
+This is the "aud" claim in the OAuth token and represents the identity of the intended recipient of the token. When accepting tokens, it is important to only accept tokens intended for you to avoid security issues. 
 
 ##### Expiry claim
 This is the "exp" claim in the OAuth token and represents how long the token is valid. The recipient of the token should check this claim to ensure the token being presented is not an old/stale token. This is also the information your client can use to determine when you need to "refresh" your access tokens.
