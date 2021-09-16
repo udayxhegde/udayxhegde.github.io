@@ -144,7 +144,8 @@ Assign the managed identity to your Azure App Service (or Functions) where your 
 
 As we discussed earlier in ths blog, this is the OAuth Confidential Client flow: you get access tokens, but no refresh tokens. You need to make sure this token is refreshed regularly before it expires. The instructions for how to do this vary depending on the AWS SDK you use.
 For example, when using the aws-sdk for Node.js, here's a snippet I used
-~~~javascript
+
+```javascript
 public tokenRefresh = async() =>{
     return credential.getToken(audience)
     .then ((response:any) => {
@@ -160,7 +161,7 @@ public tokenRefresh = async() =>{
     }
     .catch(...){...}
 }
-~~~
+```
 
 
 ## Scenario 2:using an Azure AD Application.
