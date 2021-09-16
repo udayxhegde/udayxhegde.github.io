@@ -9,7 +9,6 @@ subclass: 'post'
 author: uday
 ---
 
-## Introduction
 Software workloads continue to move to the cloud as more businesses shift to cloud computing. Most new enterprise software developed these days are built natively to the cloud. These software workloads, made up of applications, scripts, services and daemons, typically need an identity to authenticate and access resources or communicate with other services. This has resulted in a dramatic increase in “workload identities” in cloud identity systems. 
 
 Most cloud identity systems have a good level of maturity when it comes to securing, managing and governing user identities. However, this level of maturity does not currently exist for  workload identities. Their growing number along with the increasing awareness of the damage caused due to security breaches is causing many enterprises to pay closer attention to managing them in a better way. They are seeking capabilities such as lifecycle management, access management, secure adaptive access and secrets management. 

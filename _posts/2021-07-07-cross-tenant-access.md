@@ -2,7 +2,7 @@
 layout: post
 current: post
 navigation: True
-title: Cross tenant resource access
+title: Cross tenant access to Azure resources
 date: 2021-07-07 07:00:00
 class: post-template
 subclass: 'post'
