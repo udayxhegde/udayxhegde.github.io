@@ -55,7 +55,7 @@ If we want to achieve this with a single managed identity, we can take a very si
 
 However, if you need more than one identity in your tenant to assume the same AWS role, you can achieve this using an Azure AD Application dedicated for this purpose. You can then create an app role and assign multiple identities to this role. Ideally, you would be able to use the audience claim along with the role claim when authorizing these identities to assume the AWS role. However the AWS conditions only seem to support aud and sub, so you need to work around this restriction by using capabilities in the Azure AD application model, which we will look at later in this blog.
 
-## Scenario 1: Using one managed identity
+## Option 1: Using one managed identity
 First, let's take the simple approach and set this up using a single identity. 
 
 Go to the Azure portal and create a "User assigned managed identity", and copy its client id and object id, you will need these later.
@@ -164,7 +164,7 @@ public tokenRefresh = async() =>{
 ```
 
 
-## Scenario 2:using an Azure AD Application.
+## Option 2: using an Azure AD Application.
 You can also use an Azure AD application and use the Azure AD App model capabilities for some additional flexibility: especially in being able to allow multiple managed identities to assume the AWS role.
 
  By configuring your Azure AD application to require user assignment, and assigning your selected managed identities to an app role, you can limit only those identities to get a token with this audience. Ideally, we could have used the roles claim in the token to enforce only those identities can assume the AWS role. However, AWS does not support custom claims in the token, so we don't have that option. Instead, you need to closely guard that application since assigning identities to any other roles on that application will also allow them to assume the AWS role.
