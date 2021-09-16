@@ -45,7 +45,7 @@ This is the AWS policy document where you can configure the specific authorizati
 There are specific keys you can use in a trust relationship. See [the available keys for AWS web identity federation](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_iam-condition-keys.html#condition-keys-wif) for more details.
 
 ### Putting this all together
-So now we have refreshed ourselves on how Azure AD tokens behave and the possibility of using the token claims in the AWS trust relationship, let's look at what we need to consider to make this secure. Our goal is to ensure that the AWS resources can only be accessed by the identities we have chosen.
+So now we have refreshed ourselves on how Azure AD tokens behave and the possibility of using the token claims in the AWS trust relationship, let's look at how we make this secure. Our goal is to ensure that the AWS resources can only be accessed by the identities we have chosen.
 
 First, we need to determine whether we want to achieve this with a single managed identity or we need multiple managed identities to assume the AWS role. 
 
@@ -53,7 +53,7 @@ Next, we need an audience in your Azure AD tenant that represents your AWS accou
 
 If we want to achieve this with a single managed identity, we can take a very simple approach and create that single managed identity dedicated to your AWS scenarios. We can then use the client_id of that managed identity as the audience when requesting tokens, with the managed identity getting a token for itself. We can then use the audience and subject claims in the token to limit that single managed identity to assume your AWS role.
 
-However, if you need more than one identity in your tenant assuming the same AWS role, you can achieve this using an Azure AD Application dedicated for this purpose and to which multiple identities are assigned. Ideally, you would be able to use the audience claim along with the role claim when authorizing these identities to assume the AWS role. However the AWS conditions only seem to support aud and sub, so you need to work around this restriction by using capabilities in the Azure AD application model, which we will look at later in this blog.
+However, if you need more than one identity in your tenant to assume the same AWS role, you can achieve this using an Azure AD Application dedicated for this purpose. You can then create an app role and assign multiple identities to this role. Ideally, you would be able to use the audience claim along with the role claim when authorizing these identities to assume the AWS role. However the AWS conditions only seem to support aud and sub, so you need to work around this restriction by using capabilities in the Azure AD application model, which we will look at later in this blog.
 
 ## Scenario 1: Using one managed identity
 First, let's take the simple approach and set this up using a single identity. 
