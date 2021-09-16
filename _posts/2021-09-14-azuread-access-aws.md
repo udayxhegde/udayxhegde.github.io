@@ -8,10 +8,10 @@ class: post-template
 subclass: 'post'
 author: uday
 ---
-When developers build services that programmatically access AWS resources, they need to provision AWS credentials to these services. Storing these credentials securely and rotating them regularly is a challenge. Uing a managed identity in Azure avoids the need to manage credentials either in AWS or Azure. This blog post provides a walkthrough of how you can configure managed identities in your Azure tenant with access to AWS resources.
+When developers build services that programmatically access Amazon Web Services (AWS) resources, they need to provision AWS credentials to these services. Storing these credentials securely and rotating them regularly is a challenge. Uing a managed identity in Azure avoids the need to manage credentials either in AWS or Azure. This blog post provides a walkthrough of how you can configure managed identities in your Azure tenant with access to AWS resources.
 
 ## Introduction
-While AWS documentation explains how users from specific identity providers can access AWS resources, it lacks concrete examples for service principals in Azure AD. Amazon Web Services (AWS) has support and documentation for federating users from any identity provider, and granting them access to AWS resources using [AssumeRoleWithWebIdentity](https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html). We will use this concept and use the Azure AD tokens issued to a managed identity to access AWS resources.
+While AWS documentation explains how users from specific identity providers can access AWS resources, it lacks concrete examples for service principals in Azure AD. AWS has support and documentation for federating users from any identity provider, and granting them access to AWS resources using [AssumeRoleWithWebIdentity](https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html). We will use this concept and use the Azure AD tokens issued to a managed identity to access AWS resources.
 
 ### First, the concepts we will use to set this up
 
