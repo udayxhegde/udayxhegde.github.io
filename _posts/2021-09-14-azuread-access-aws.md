@@ -8,10 +8,10 @@ class: post-template
 subclass: 'post'
 author: uday
 ---
-When developers build services that programmatically access AWS resources, they need to provision AWS credentials to these services. Since storing these credentials securely and rotating them regularly is a challenge, Azure developers prefer to use a managed identity in Azure for these scenarios. This allows them to write code without having to manage credentials either in AWS or Azure AD.  While AWS documentation explains how users from specific identity providers can access AWS resources, it lacks concrete examples for service principals in Azure AD. This blog post provides a walkthrough of how you can configure managed identities in your Azure tenant with access to AWS resources.
+When developers build services that programmatically access AWS resources, they need to provision AWS credentials to these services. Storing these credentials securely and rotating them regularly is a challenge. Uing a managed identity in Azure avoids the need to manage credentials either in AWS or Azure. This blog post provides a walkthrough of how you can configure managed identities in your Azure tenant with access to AWS resources.
 
 ## Introduction
-Amazon Web Services (AWS) has support and documentation for federating users from any identity provider, and granting them access to AWS resources using [AssumeRoleWithWebIdentity](https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html). We will use this concept and use the Azure AD tokens issued to a managed identity to access AWS resources.
+While AWS documentation explains how users from specific identity providers can access AWS resources, it lacks concrete examples for service principals in Azure AD. Amazon Web Services (AWS) has support and documentation for federating users from any identity provider, and granting them access to AWS resources using [AssumeRoleWithWebIdentity](https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html). We will use this concept and use the Azure AD tokens issued to a managed identity to access AWS resources.
 
 ### First, the concepts we will use to set this up
 
@@ -185,7 +185,7 @@ Finally, we need to assign our managed identity to this role. Unfortunately, Azu
 For this step, you need 3 things: the object id of the managed identity, the identity of the app role you created, and the object id of the service principal that represents the application you created. You can find this last part by going to the Enterprise Applications on the Azure AD portal, and search for the application name you just created. The object you find is the service principal of the application, and you can look up the object id of that service principal.
 
 You will be executing a PowerShell cmdlet that looks like this:
-```{
+```
 New-AzureADServiceAppRoleAssignment \
      -ObjectId <object id of your managed identity> \
      -Id <identity of the app role> \

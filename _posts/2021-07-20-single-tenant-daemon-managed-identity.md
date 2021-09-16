@@ -63,3 +63,5 @@ Now when you get a token for the managed identity, it contains the app roles you
 
 To see a very rudimentary example of the daemon app that illustrates the code in Node.js, see [this GitHub repo](https://github.com/udayxhegde/singletenant-daemon-node).
 
+
+Comments/feedback/questions? [DM me on twitter](https://twitter.com/messages/compose?recipient_id=1446741344)
