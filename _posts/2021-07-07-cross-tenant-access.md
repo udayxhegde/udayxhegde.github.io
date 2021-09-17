@@ -8,7 +8,7 @@ class: post-template
 subclass: 'post'
 author: uday
 ---
-Sometimes you may need to access an Azure resource in a different tenant from where your application is running. This blog post explains how you can achieve that.
+The Azure AD application model allows developers to build and deploy a service in one tenant and access resources in another tenant when the application is addded to that tenant. This is typically optimized for the scenarios that require Microsoft Graph access. Sometimes you may also need to access an Azure resource in the other tenant. This blog post gives a walkthrough on how to achieve that.
 
 ## Introduction
 

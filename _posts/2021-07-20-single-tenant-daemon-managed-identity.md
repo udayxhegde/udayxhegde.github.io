@@ -8,15 +8,11 @@ class: post-template
 subclass: 'post'
 author: uday
 ---
-Learn how to use Managed Identities for a daemon service that is accessing your API application.
+A single-tenant daemon service (which accesses resources within the tenant) is commonly showcased using the Azure AD Application model. However, since the daemon scenario uses a confidential client flow, you now need to deal with the application secrets. Where do you store it securely (eg: Azure KeyVault) and how do you rotate it regularly? This blog shows how you can use Managed Identities for your daemon service and get away from having to deal with credentials.
 
 ## Introduction
 
-An [earlier blog post](https://blog.identitydigest.com/cross-tenant-access/) discussed how to build a multi-tenant daemon app that can access Azure and Graph resources in different tenants. Since multi-tenant access is a capability in the AAD Application model, we needed an Azure AD application to achieve that.
-
-A single-tenant daemon service (which accesses resources within a tenant) is also commonly showcased using the Azure AD Application model since that model provides the simplest way to achieve this scenario. However, since the daemon scenario uses a confidential client flow, you now need to deal with the application secrets. Where do you store it securely (eg: Azure KeyVault) and how do you rotate it regularly? Could you do away with this problem of having to manage secrets by using Azure AD Managed Identities?
-
-This blog post shows how you can achieve this using Managed Identities. We will look at how you can build a single tenant daemon service using managed identity and call APIs you have published and protected using Azure AD.
+An [earlier blog post](https://blog.identitydigest.com/2021/07/07/cross-tenant-access.html) discussed how to build a multi-tenant daemon app that can access Azure and Graph resources in different tenants. Since multi-tenant access is a capability in the AAD Application model, we needed an Azure AD application to achieve that. Here, we will look at how you can build a single tenant daemon service using managed identity and call APIs you have published and protected using Azure AD.
 
 ## What is Azure AD Managed identity?
 If you are reading this blog, you are probably already familiar with managed identities. In a nutshell: Azure AD Managed identity is an identity where the credentials/secrets are managed by the Azure platform. Your service running on Azure can simply use that identity to get tokens to access Azure AD protected resources. No more worrying about storing secrets, rotating them or accidentally checking them in your repo.
