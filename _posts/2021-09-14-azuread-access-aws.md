@@ -8,16 +8,15 @@ class: post-template
 subclass: 'post'
 author: uday
 ---
-When developers build services that programmatically access Amazon Web Services (AWS) resources, they need to provision AWS credentials to these services. Storing these credentials securely and rotating them regularly is a challenge. Using a managed identity in Azure avoids the need to manage credentials either in AWS or Azure. This blog post provides a walkthrough of how you can configure managed identities in your Azure tenant with access to AWS resources.
+When developers build services that access Amazon Web Services (AWS) resources, they need to provision AWS credentials to these services. Storing these credentials securely and rotating them regularly is a challenge. Using a managed identity in Azure avoids the need to manage credentials either in AWS or Azure. This blog post provides a walkthrough of how you can configure managed identities in your Azure tenant with access to AWS resources.
 
-## Introduction
-While AWS documentation explains how users from specific identity providers can access AWS resources, it lacks concrete examples for service principals in Azure AD. AWS has support and documentation for federating users from any identity provider, and granting them access to AWS resources using [AssumeRoleWithWebIdentity](https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html). We will use this concept and use the Azure AD tokens issued to a managed identity to access AWS resources.
+The [AssumeRoleWithWebIdentity](https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html) concept in AWS allows identities for external identity providers to access AWS resources. With this concept, we can configure access to AWS resources using Azure AD tokens issued to a managed identity.
 
-### First, the concepts we will use to set this up
+## First, the concepts we will use to set this up
 
 Before we jump into the specifics, let's refresh ourselves on a few concepts, to ensure that we can set this up securely and avoid any surprises later on.
 
-#### Azure AD Managed Identity
+### Azure AD Managed Identity
 The Azure AD managed identity is an Azure resource. It provides you with an identity where the credentials are managed by the Azure platform. When you run code in any of the Azure compute resources, such as App Services and Functions, you can use the managed identity to access resources you have granted that identity. Using these identities, you avoid having to store, secure, rotate or manage the credentials on your own.
 
 #### Azure AD Tokens
@@ -36,7 +35,7 @@ This is the "exp" claim in the OAuth token and represents how long the token is 
 #### Role claims
 OAuth also allows the token to contain other custom claims. Azure AD access tokens include a "roles" claim which will include all the app roles assigned to the "subject" to whom the token was issued. See [recieve app roles in tokens](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-add-app-roles-in-azure-ad-apps).
 
-#### AWS AssumeRoleWithWebIdentity
+### AWS AssumeRoleWithWebIdentity
 AWS allows you to configure tokens issued by any identity provider to assume a role in AWS, and access AWS resources granted to that role.
 
 #### Trust Relationship
@@ -172,7 +171,7 @@ public tokenRefresh = async() =>{
 You can also use an Azure AD application and use the Azure AD App model capabilities for some additional flexibility: especially in being able to allow multiple managed identities to assume the AWS role.
 
 The ideal way to achieve this would have been to assign the managed identities to an app role, and then use the role claim in AWS to authorize assuming the AWS role. However, AWS does not support the use of custom claims in the token. So we have to find other creative ways to solve this problem. We will use the following on the Azure AD side to enforce who can get the token with the application audience:
-- Configuring your Azure AD application to require user assignment. This will ensure that only identities assigned to the application can get a token with the application audience
+- Configure your Azure AD application to require user assignment. This will ensure that only identities assigned to the application can get a token with the application audience
 - Create an application role and assign your selected managed identities to that role.
 - make sure no one adds any other roles or assign other identities to the application
 
