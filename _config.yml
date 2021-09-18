@@ -37,5 +37,6 @@ google_analytics: UA-172927082-3
 # Build settings
 theme: minima
 plugins:
+  - jekyll-sitemap # Create a sitemap using the official Jekyll sitemap gem
   - jekyll-feed
   - jekyll-seo-tag
