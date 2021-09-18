@@ -7,6 +7,8 @@ date: 2021-09-14 07:00:00
 class: post-template
 subclass: 'post'
 author: uday
+permalink: /:year/:month/:day/:title:output_ext
+
 ---
 When developers build services that need to access other resources, they have to figure out how to manage the credentials for this access. When these services are running in Azure, developers can use managed identities in Azure to avoid dealing with credentials on their own. This "secret-less" model can be used even when these services need to access Amazon Web Services (AWS) resources. This blog post provides a walkthrough of how you can achieve this.
 
@@ -34,7 +36,7 @@ The "exp" claim in the OAuth token represents how long the token is valid. The r
 OAuth also allows the token to contain other custom claims. Azure AD access tokens include a "roles" claim. It includes all the app roles assigned to the "subject" to whom the token was issued. See [recieve app roles in tokens](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-add-app-roles-in-azure-ad-apps).
 
 ### AWS AssumeRoleWithWebIdentity
-The [AssumeRoleWithWebIdentity](https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html) allows you to configure tokens issued by any identity provider to assume a role in AWS. You can then access AWS resources granted to that role. We will use this capability to access AWS resources using managed identities in Azure.
+The [AssumeRoleWithWebIdentity](https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html) allows you to configure tokens issued by any identity provider to assume a role in AWS. You can then access AWS resources granted to that role. We will use this capability to access AWS resources using managed identities in Azure. Here is another helpful [reference](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-idp_oidc.html) on this concept.
 
 #### Trust Relationship
 AWS has a policy document where you can configure the specific authorization rules. Using this, you can ensure only the identities you pick are allowed to assume the role. We will combine our knowledge of Azure AD OAuth token and the AWS trust policy behavior to set things up securely.

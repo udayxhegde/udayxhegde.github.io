@@ -8,7 +8,7 @@ class: post-template
 subclass: 'post'
 author: uday
 ---
-The Azure AD application model allows developers to build and deploy a service in one tenant and access resources in another tenant when the application is addded to that tenant. This is typically optimized for the scenarios that require Microsoft Graph access. Sometimes you may also need to access an Azure resource in the other tenant. This blog post gives a walkthrough on how to achieve that.
+The Azure AD application model allows developers to build and deploy a service in one tenant and access resources in another tenant when the application is added to that tenant. This is typically optimized for the scenarios that require Microsoft Graph access. Sometimes you may also need to access an Azure resource in the other tenant. This blog post gives a walkthrough on how to achieve that.
 
 ## Introduction
 
@@ -16,11 +16,7 @@ A multi-tenant application in Azure Active Directory provides a convenient way f
 
 A typical multi-tenant application is configured to access tenant-specific data in the context of the logged-in user. This is called delegated access since the application accesses the data as the signed-in user. The application doesn't even need to know which tenant it is accessing, since the signed-in user who is interacting with the application belongs to a tenant and that implies which tenant is being accessed on behalf of the user. 
 
-Rarely, some people have scenarios where they need their application to run without a signed-in user, and still access resources in multiple tenants. In addition, there are some scenarios which deal with Azure resoures, which need to be treated differently when compared to Microsoft Graph.
-
-Since the multi-tenant application model is the only way you can access cross-tenant resources from a single instance of an application, it is handy to be able to use it for these not so common scenarios.
-
-This blog post explores how we can try to achieve this.
+Sometimes, people have scenarios where they need their application to run without a signed-in user, and still access resources in multiple tenants. In addition, there are other scenarios that need access to Azure resources. Since the multi-tenant application model is the only way you can access cross-tenant resources from a single instance of an application, it is handy to be able to use it for these scenarios.
 
 ## How the multi-tenant app works
 To ground ourselves, let's briefly look at how a multi-tenant app works for the common scenario where there is user interaction.

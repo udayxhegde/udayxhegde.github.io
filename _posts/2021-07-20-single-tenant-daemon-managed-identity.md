@@ -29,7 +29,7 @@ Since you want this daemon service to access your APIs which are protected by Az
 
 You can do this via PowerShell by [following directions in this Microsoft document](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/how-to-assign-app-role-managed-identity-powershell)
 
-This PowerShell needs multiple ids, some of them redundant and others with confusing names, and you have to wonder why someone designed it this way, but let's put that behind us and focus on the getting this task out of our way.
+This PowerShell needs multiple ids, some of them redundant and others with confusing names, and you have to wonder why someone designed it this way, but let's put that behind us and focus on getting this task out of our way.
 
 You will need the following: 
 - the object id of the managed identity
