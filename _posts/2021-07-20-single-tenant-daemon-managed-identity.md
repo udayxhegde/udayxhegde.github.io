@@ -15,7 +15,7 @@ A single-tenant daemon service (which accesses resources within the tenant) is c
 An [earlier blog post](https://blog.identitydigest.com/2021/07/07/cross-tenant-access.html) discussed how to build a multi-tenant daemon app that can access Azure and Graph resources in different tenants. Since multi-tenant access is a capability in the AAD Application model, we needed an Azure AD application to achieve that. Here, we will look at how you can build a single tenant daemon service using managed identity and call APIs you have published and protected using Azure AD.
 
 ## What is Azure AD Managed identity?
-If you are reading this blog, you are probably already familiar with managed identities. In a nutshell: Azure AD Managed identity is an identity where the credentials/secrets are managed by the Azure platform. Your service running on Azure can simply use that identity to get tokens to access Azure AD protected resources. No more worrying about storing secrets, rotating them or accidentally checking them in your repo.
+If you are reading this blog, you are probably already familiar with managed identities. In a nutshell: Azure AD Managed identity is an identity where the credentials/secrets are managed by the Azure platform. Your service running on Azure can simply use that identity to get tokens to access Azure AD protected resources. No more worrying about storing secrets, rotating them or accidentally checking them in your code repository.
 
 ## Step 1, Deploy your service in Azure with a managed identity
 Create an Azure resource, such as a Web App or Functions, where you will run the code for your daemon service. In the Azure portal, this resource has an Identity section where you can create and assign a managed identity to your service. 
@@ -29,7 +29,7 @@ Since you want this daemon service to access your APIs which are protected by Az
 
 You can do this via PowerShell by [following directions in this Microsoft document](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/how-to-assign-app-role-managed-identity-powershell)
 
-This PowerShell needs multiple ids, some of them redundant and others with confusing names, and you have to wonder why someone designed it this way, but let's put that behind us and focus on getting this task out of our way.
+This PowerShell needs multiple ids, some of them redundant and others with confusing names. While you may wonder why someone designed it this way, let's put that behind us and focus on getting this task out of our way.
 
 You will need the following: 
 - the object id of the managed identity
@@ -55,7 +55,7 @@ You now have all the things needed to assign your managed identity to the app ro
 To undo the assignment, simply use the Remove variant of the PowerShell: Remove-AzureADServiceAppRoleAssignment
 
 ## Step 3, use Azure/Identity SDK to get tokens for your Managed identity
-Now when you get a token for the managed identity, it contains the app roles you assigned to it. You can get tokens in a variety of ways using the Azure Identity SDK. A simple example is to use the ManagedIdentityCredential using the object id of the managed identity for your service. When you send this token to your API call, your API application can check for the app roles to determine what permissions are allowed for your daemon service.
+Now when you get a token for the managed identity, it contains the app roles you assigned to it. You can get tokens in a variety of ways using the Azure Identity SDK. A simple example is to use the ManagedIdentityCredential using the client id of the managed identity for your service. When you send this token to your API call, your API application can check for the app roles to determine what permissions are allowed for your daemon service.
 
 To see a very rudimentary example of the daemon app that illustrates the code in Node.js, see [this GitHub repo](https://github.com/udayxhegde/singletenant-daemon-node).
 
