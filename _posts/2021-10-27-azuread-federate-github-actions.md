@@ -169,5 +169,5 @@ For Azure AD, the recommended value of this audience is api://AzureADTokenExchan
 ### In conclusion
 Azure AD workload identity federation is a new capability that allows you to get rid of secrets in the GitHub Actions workflow. Stay tuned for many more scenarios where this capability can be used to get rid of secrets.
 
-If you have any feedback or suggestions or even feature requests on this topic of workload identity federation, I would love to hear from you. [DM me on twitter](https://twitter.com/messages/compose?recipient_id=1446741344)
+If you have any comments, feedback or suggestions  on this topic, I would love to hear from you. [DM me on twitter](https://twitter.com/messages/compose?recipient_id=1446741344)
 
