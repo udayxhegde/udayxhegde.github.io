@@ -54,7 +54,7 @@ You now have all the things needed to assign your managed identity to the app ro
 
 To undo the assignment, simply use the Remove variant of the PowerShell: Remove-AzureADServiceAppRoleAssignment
 
-## Step 3, use Azure/Identity SDK to get tokens for your Managed identity
+## Step 3, use Azure Identity SDK to get tokens for your Managed identity
 Now when you get a token for the managed identity, it contains the app roles you assigned to it. You can get tokens in a variety of ways using the Azure Identity SDK. A simple example is to use the ManagedIdentityCredential using the client id of the managed identity for your service. When you send this token to your API call, your API application can check for the app roles to determine what permissions are allowed for your daemon service.
 
 To see a very rudimentary example of the daemon app that illustrates the code in Node.js, see [this GitHub repo](https://github.com/udayxhegde/singletenant-daemon-node).

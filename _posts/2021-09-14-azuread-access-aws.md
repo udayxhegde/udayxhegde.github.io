@@ -1,7 +1,7 @@
 ---
 layout: post
 current: post
-navigation: True
+navigation: False
 title: Access AWS resources using Azure AD identities
 date: 2021-09-14 07:00:00
 class: post-template
