@@ -12,7 +12,7 @@ A single-tenant daemon service (which accesses resources within the tenant) is c
 
 ## Introduction
 
-An [earlier blog post](https://blog.identitydigest.com/2021/07/07/cross-tenant-access.html) discussed how to build a multi-tenant daemon app that can access Azure and Graph resources in different tenants. Since multi-tenant access is a capability in the AAD Application model, we needed an Azure AD application to achieve that. Here, we will look at how you can build a single tenant daemon service using managed identity and call APIs you have published and protected using Azure AD.
+An [earlier blog post]({% post_url 2021-07-07-cross-tenant-access %}) discussed how to build a multi-tenant daemon app that can access Azure and Graph resources in different tenants. Since multi-tenant access is a capability in the AAD Application model, we needed an Azure AD application to achieve that. Here, we will look at how you can build a single tenant daemon service using managed identity and call APIs you have published and protected using Azure AD.
 
 ## What is Azure AD Managed identity?
 If you are reading this blog, you are probably already familiar with managed identities. In a nutshell: Azure AD Managed identity is an identity where the credentials/secrets are managed by the Azure platform. Your service running on Azure can simply use that identity to get tokens to access Azure AD protected resources. No more worrying about storing secrets, rotating them or accidentally checking them in your code repository.
