@@ -159,7 +159,7 @@ Here's an example of how you can use this in an Azure SDK such as storage-blob
 ```javascript
 const { BlobServiceClient } = require("@azure/storage-blob");
 
-const tokencredential =  new ClientAssertionCredential(...);
+const tokenCredential =  new ClientAssertionCredential(...);
                                              
 const blobClient = new BlobServiceClient(blobUrl, tokenCredential);
 
