@@ -58,7 +58,7 @@ az rest --method POST --uri 'https://graph.microsoft.com/beta/applications/'$app
 #### Using the Microsoft Graph SDKs.
 You can also use the Microsoft Graph SDKs, available in several languages, to view or modify a federated identity credential. You can choose either the delegated flow or the application-only flow: just make sure the service principal you use for this purpose has been consented with the Application.ReadWrite.All permissions.
 
-The federatedIdentityCredentials are currently in beta (https://graph.microsoft.com/beta/applications/<object id of app>/federatedIdentityCredentials). The following SDKs have support for the beta endpoint. 
+The federatedIdentityCredentials are currently in beta (https://graph.microsoft.com/beta/applications/"object-id-of-app"/federatedIdentityCredentials). The following SDKs have support for the beta endpoint. 
 
 - .Net [https://github.com/microsoftgraph/msgraph-beta-sdk-dotnet](https://github.com/microsoftgraph/msgraph-beta-sdk-dotnet)
 - Javascript, [https://github.com/microsoftgraph/msgraph-sdk-javascript](https://github.com/microsoftgraph/msgraph-sdk-javascript)
