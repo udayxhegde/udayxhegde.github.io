@@ -154,16 +154,16 @@ class ClientAssertionCredential implements TokenCredential {
     }
 }
 ```
-Here's an example of how you can use this in an Azure SDK such as keyvault-secrets
+Here's an example of how you can use this in an Azure SDK such as storage-blob
 ```javascript
-const kvSecret = require('@azure/keyvault-secrets');
+const { BlobServiceClient } = require("@azure/storage-blob");
 
-let credential =  new ClientAssertionCredential(...);
+const tokencredential =  new ClientAssertionCredential(...);
                                              
-let vaultClient = new kvSecret.SecretClient(keyVaultUrl, credential);
+const blobClient = new BlobServiceClient(blobUrl, tokenCredential);
 
 ```
-When you make requests to the vaultClient to access secrets, the vaultClient calls the getToken method on the ClientAssertionCredential. This results in a request for a fresh ID token from the metatdata server which then gets exchanged for an Azure AD access token.
+When you make requests to the blobClient to access storage, the blobClient calls the getToken method on the ClientAssertionCredential. This results in a request for a fresh ID token from the metatdata server which then gets exchanged for an Azure AD access token.
 
 ### In conclusion
 Azure AD workload identity federation is a new capability that allows you to get rid of secrets in several scenarios such as GitHub Actions workflow and services running in Google Cloud. Stay tuned for many more scenarios where this capability can be used to get rid of secrets.
