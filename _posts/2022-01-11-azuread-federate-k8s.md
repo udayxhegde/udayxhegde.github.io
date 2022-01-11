@@ -22,7 +22,7 @@ There are four parts to get this working end-to-end in a Kubernetes cluster:
 3. Azure AD applications are configured to trust the Kubernetes tokens
 4. The Kubernetes tokens are exchanged for Azure AD tokens, and used to access Azure AD protected resources such as Azure and Microsoft Graph.
 
-Since this pattern uses constructs native to Kubernetes, it works no matter where you deploy your cluster. It could be a cluster managed by a cloud provider such Azure or AWS or GCP. Or it could be a cluster you are self-managing in a cloud or on-premises. The Microsoft [published guidance](https://azure.github.io/azure-workload-identity) and [open-source components](https://github.com/Azure/azure-workload-identity/) make it easy to deploy this in any cluster.
+Since this pattern uses constructs native to Kubernetes, it works where ever you deploy your cluster. It could be a cluster managed by a cloud provider such Azure or AWS or GCP. Or it could be a cluster you are self-managing in a cloud or on-premises. The Microsoft [published guidance](https://azure.github.io/azure-workload-identity) and [open-source components](https://github.com/Azure/azure-workload-identity/) make it easy to deploy this in any cluster.
 
 Let's walk through this flow end-to-end using a managed cluster in Azure. Later in the blog, we will look at more details such as things to consider for your self-managed cluster.  
 
@@ -35,7 +35,7 @@ Since this is a new preview capability in AKS, there are several steps involved 
 - Install an update to the aks extension in Azure CLI 
 - create a new cluster or update an existing one with the OIDC feature
 
-See the [AKS documentation for enabling OIDC issuer](https://docs.microsoft.com/en-us/azure/aks/cluster-configuration#oidc-issuer-preview). Here are the steps we will use from that documentation. 
+See the [AKS documentation for enabling OIDC issuer](https://docs.microsoft.com/en-us/azure/aks/cluster-configuration#oidc-issuer-preview). Let's use these steps from that documentation. 
 ```
 # Install an update to the aks extension in Azure CLI 
 az extension [add|update] --name aks-preview
@@ -77,7 +77,7 @@ helm install workload-identity-webhook azure-workload-identity/workload-identity
    --set azureTenantID="${AZURE_TENANT_ID}"
 ```
 
-This will add a namespace to your cluster and deploy the mutating webhook:
+This adds a namespace to your cluster and deploy the mutating webhook:
 ```
 kubectl get pods -n azure-workload-identity-system
 NAME                                                   READY   STATUS    RESTARTS   AGE
@@ -90,7 +90,7 @@ azure-wi-webhook-webhook-service   ClusterIP   10.0.42.255   <none>        443/T
 ```
 
 ### Part 2: Developers setup their deployment with a Kubernetes service account
-Use a service account in your Kubernetes deployment. Annotate the service account with the identity of the Azure AD application you want to use. The mutating webhook will use this annotation to automate a bunch of configurations in your deployment. 
+Use a service account in your Kubernetes deployment. Annotate the service account with the identity of the Azure AD application you want to use. This mutating webhook will use the annotation to automate several configurations in your deployment. 
 ```json
 apiVersion: v1
 kind: ServiceAccount
@@ -140,7 +140,7 @@ Populate the cluster issuer URL, the namespace and service account for your depl
 You can also use the Azure CLI or do this programmatically. See [this blog post]({% post_url 2021-11-11-azuread-federate-gcp %}) for details.
 
 ### Part 4: Access Azure resources using the Kubernetes token
-Kubernetes issues a token for the service account at a file location specified by the mutating webhook. This token can be exchanged for an Azure AD access token. My [github repo](https://github.com/udayxhegde/aad-federate-blobstore-node) provides a very simple example to demonstrate this exchange. It shows this for both Azure Identity SDK as well as for Microsoft Authentication Library.
+Kubernetes issues a token for the service account at a file location specified by the mutating webhook. This token can be exchanged for an Azure AD access token. My [github repo](https://github.com/udayxhegde/aad-federate-blobstore-node) provides a simple example to demonstrate this exchange. It shows this for both Azure Identity SDK and Microsoft Authentication Library.
 
 Updates to the Azure Identity SDK use the configuration setup by the mutating admission webhook. This allows us to use existing and familiar code patterns. Here's an example snippet for accessing Azure blob storage:
 
@@ -155,7 +155,7 @@ const blobClient = new BlobServiceClient(`https://${account}.blob.core.windows.n
 ```
 
 #### Using Microsoft Authentication Library (MSAL)
-Alternately, you can use MSAL and write code similar to what we saw in the blog for Google Cloud. In the case of Kubernetes, the token is available at a file location configured by the mutating admission webhook. The file location is stored in the  AZURE_FEDERATED_TOKEN_FILE environment variable.
+Alternately, you can use MSAL and write code similar to what we saw in the blog for Google Cloud. In the case of Kubernetes, the token is available at a file location configured by the mutating admission webhook. The file location is available in the  AZURE_FEDERATED_TOKEN_FILE environment variable.
 
 ```javascript
 async function k8sToken() {
@@ -248,14 +248,15 @@ Let's take a closer look at a few things:
 When you run "aks --enable-oidc-issuer", it enables the Kubernetes [Service Account Token Volume Projection](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#service-account-token-volume-projection) feature. This feature is stable in v1.20.
 AKS provides the cluster with the necessary signing keys. For key hygiene, AKS rotates these keys every 90 days.
 
+
 If you are using a managed cluster other than AKS, follow instructions from your providers such as EKS or GKE to enable this on your cluster. 
 
 For self-managed clusters, use the guidance provided [here](https://azure.github.io/azure-workload-identity/installation/self-managed-clusters.html).
 
-***The utmost care should be exercised in deciding to enable the feature to make your cluster an identity provider.*** Getting rid of secrets for your developers is made possible by making the cluster a token issuer. When enabling the token volume projection feature, you are providing the keys the cluster uses to sign these tokens. An attacker can access all the resources available to all the pods in the cluster across all namespaces if these keys are compromised! Your planning considerations for turning this on must include a disciplined schedule for rotating these keys. See [this guidance](https://azure.github.io/azure-workload-identity/topics/self-managed-clusters/service-account-key-rotation.html) for details on implementing the rotation of these keys.
+***The utmost care needs to be exercised in deciding to enable the feature to make your cluster an identity provider.*** Getting rid of secrets for your developers is made possible by making the cluster a token issuer. When enabling the token volume projection feature, you are providing the keys the cluster uses to sign these tokens. Attackers  can access all the resources available to any pods in the cluster if these keys are compromised! Your planning considerations for turning this on must include a disciplined schedule for rotating these keys. See [this guidance](https://azure.github.io/azure-workload-identity/topics/self-managed-clusters/service-account-key-rotation.html) for details on implementing the rotation of these keys.
 
 #### Publishing the OpenID Connect discovery document
-Now that the cluster is a token issuer, it is also necessary to publish the OIDC discovery document. Identity providers such as Azure AD need it to validate the tokens issued by the cluster. 
+Now that the cluster is a token issuer, it is necessary to publish the OIDC discovery document. Identity providers such as Azure AD need it to validate the tokens issued by the cluster. 
 
 When you run "az aks --enable-oidc-issuer", AKS published an OIDC discovery document for your cluster. If you are self-managing your cluster, you have a couple of options for doing this. The guidance provided [here](https://azure.github.io/azure-workload-identity/installation/self-managed-clusters/oidc-issuer.html) contains two parts:
 - [The OIDC discovery document](https://azure.github.io/azure-workload-identity/installation/self-managed-clusters/oidc-issuer/discovery-document.html)
@@ -267,11 +268,11 @@ Alternatively, you can also investigate a Kubernetes feature called [Service Acc
 
 #### The mutating admission webhook
 
-The mutating webhook, which is an optional component, simplifies the configuration for your developers.
+The mutating webhook, an optional component, simplifies the configuration for your developers.
 
 Kubernetes supports [admission webhooks](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/) which provide an opportunity to change the configuration of your deployment on the fly. The mutating webhook uses this support to simplify the configuration for developers. Developers can simply annotate their service accounts. The mutating webhook uses that information to populate the rest of the necessary config.
 
-Here's a sample configuration that's automatically generated by the mutating webhook, based on the annotation on the sevice account.
+Here's a sample configuration that's automatically generated by the mutating webhook, based on the annotation on the service account.
 ```
         env: 
         - name: AZURE_CLIENT_ID
