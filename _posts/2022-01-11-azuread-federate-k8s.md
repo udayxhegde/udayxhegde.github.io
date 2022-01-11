@@ -91,7 +91,7 @@ azure-wi-webhook-webhook-service   ClusterIP   10.0.42.255   <none>        443/T
 
 ### Part 2: Developers setup their deployment with a Kubernetes service account
 Use a service account in your Kubernetes deployment. Annotate the service account with the identity of the Azure AD application you want to use. This mutating webhook will use the annotation to automate several configurations in your deployment. 
-```json
+```
 apiVersion: v1
 kind: ServiceAccount
 metadata:
