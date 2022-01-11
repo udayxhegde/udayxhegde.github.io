@@ -3,7 +3,7 @@ layout: post
 current: post
 navigation: True
 title: Azure AD workload identity federation with Kubernetes
-date: 2022-01-11 16:00:00
+date: 2022-01-11 10:00:00
 class: post-template
 subclass: 'post'
 author: uday
