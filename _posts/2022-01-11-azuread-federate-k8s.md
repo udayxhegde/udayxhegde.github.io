@@ -58,7 +58,7 @@ az aks [create|update] -g "${RESOURCE_GROUP}" --location "${LOCATION}" \
 ```
 
 You will notice this section showing where AKS has published the OIDC discovery document.
-```
+```json
 "oidcIssuerProfile": {
     "enabled": true,
     "issuerUrl": "https://oidc.prod-aks.azure.com/700765c7-88f3-4d93-b606-24947451ea53/"
@@ -91,7 +91,7 @@ azure-wi-webhook-webhook-service   ClusterIP   10.0.42.255   <none>        443/T
 
 ### Part 2: Developers setup their deployment with a Kubernetes service account
 Use a service account in your Kubernetes deployment. Annotate the service account with the identity of the Azure AD application you want to use. The mutating webhook will use this annotation to automate a bunch of configurations in your deployment. 
-```
+```json
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -133,7 +133,7 @@ The Azure AD portal has added preview features to simplify this configuration. V
 
 In the "Federated credential scenario", pick "Kubernetes accessing Azure resources"
 ![Azure AD K8s scenario](/images/k8s-federate/k8s_set.jpg)
-Populate the cluster issuer URL, the namespace and service account for your deployment. Azure AD will populate the subject name with the formate used by Kubernetes.
+Populate the cluster issuer URL, the namespace and service account for your deployment. Azure AD will populate the subject name with the format used by Kubernetes.
 ![Azure AD K8s credential](/images/k8s-federate/k8s_done.jpg)
 
 #### other ways to achieve this
@@ -144,8 +144,8 @@ Kubernetes issues a token for the service account at a file location specified b
 
 Updates to the Azure Identity SDK use the configuration setup by the mutating admission webhook. This allows us to use existing and familiar code patterns. Here's an example snippet for accessing Azure blob storage:
 
-```
-import { BlobServiceClient } from "@azure/storage-blob";
+```javascript
+import { BlobServiceClient } from "@azure/storage-blob"; 
 import { DefaultAzureCredential } from "@azure/identity";
 
 const credential = new DefaultAzureCredential();
@@ -180,7 +180,7 @@ Now that you have a Kubernetes token, we can exchange this for an Azure AD acces
 - [MSAL Node](https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-node)
 - [MSAL .Net](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet)
 - [MSAL Python](https://github.com/AzureAD/microsoft-authentication-library-for-python)
-- [MSAL Java](https://github.com/AzureAD/microsoft-authentication-library-for-java)
+- [MSAL Java](https://github.com/AzureAD/microsoft-authentication-library-for-java)   **Please be aware [there is an issue](https://github.com/AzureAD/microsoft-authentication-library-for-java/issues/437) on MSAL Java being investigated**
 
 Here's a sample code snippet to demonstrate this, extracted from my repo:
 ```javascript
@@ -252,7 +252,7 @@ If you are using a managed cluster other than AKS, follow instructions from your
 
 For self-managed clusters, use the guidance provided [here](https://azure.github.io/azure-workload-identity/installation/self-managed-clusters.html).
 
-The utmost care should be exercised in deciding to enable the feature to make your cluster an identity provider. Getting rid of secrets for your developers is made possible by making the cluster a token issuer. When enabling the token volume projection feature, you are providing the keys the cluster uses to sign these tokens. An attacker can access all the resources available to all the pods in the cluster across all namespaces if these keys are compromised! Your planning considerations for turning this on must include a disciplined schedule for rotating these keys. See [this guidance](https://azure.github.io/azure-workload-identity/topics/self-managed-clusters/service-account-key-rotation.html) for details on implementing the rotation of these keys.
+***The utmost care should be exercised in deciding to enable the feature to make your cluster an identity provider.*** Getting rid of secrets for your developers is made possible by making the cluster a token issuer. When enabling the token volume projection feature, you are providing the keys the cluster uses to sign these tokens. An attacker can access all the resources available to all the pods in the cluster across all namespaces if these keys are compromised! Your planning considerations for turning this on must include a disciplined schedule for rotating these keys. See [this guidance](https://azure.github.io/azure-workload-identity/topics/self-managed-clusters/service-account-key-rotation.html) for details on implementing the rotation of these keys.
 
 #### Publishing the OpenID Connect discovery document
 Now that the cluster is a token issuer, it is also necessary to publish the OIDC discovery document. Identity providers such as Azure AD need it to validate the tokens issued by the cluster. 
