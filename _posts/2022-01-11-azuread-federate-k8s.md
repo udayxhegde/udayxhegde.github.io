@@ -3,7 +3,7 @@ layout: post
 current: post
 navigation: True
 title: Azure AD workload identity federation with Kubernetes
-date: 2022-01-11 16:00:00
+date: 2022-01-11 16:20:00
 class: post-template
 subclass: 'post'
 author: uday
@@ -26,7 +26,7 @@ Since this pattern uses constructs native to Kubernetes, it works no matter wher
 
 Let's walk through this flow end-to-end using a managed cluster in Azure. Later in the blog, we will look at more details such as things to consider for your self-managed cluster.  
 
-## Quickstart to evaluate this end-to-end
+## End-to-end walk-through to demonstrate this
 
 ### Part 1: Set up your Azure Kubernetes Service (AKS) cluster to issue tokens to your pods
 
