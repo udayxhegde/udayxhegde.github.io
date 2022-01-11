@@ -9,7 +9,7 @@ subclass: 'post'
 author: uday
 
 ---
-Enterprise applications are increasingly built using cloud-native technologies. Developers are embracing software concepts such as microservices and containers. Kubernetes is emerging as a popular platform for deploying these applications. In an [earlier blog post]({% post_url 2021-11-11-azuread-federate-gcp %}), we discussed how to use Azure AD workload identity federation to access Azure resources from Google cloud without needing secrets. This blog post explores how services running in a Kubernetes cluster can also use this capability to access Azure resources. No secrets are necessary.
+Enterprises are increasingly using cloud-native technologies to build software workloads. Modern development practices are embracing concepts such as microservices and containers. Kubernetes is emerging as a popular platform for deploying software workloads. An [earlier blog post]({% post_url 2021-11-11-azuread-federate-gcp %})discussed how Azure AD workload identity federation avoids the need for secrets when accessing Azure resources from Google cloud. This blog post explores how services running in a Kubernetes cluster can also use this capability to access Azure resources. No secrets are necessary.
 
 ![Kubernetes AAD federation](/images/k8s-federate/k8sfederate_img.png)
 
@@ -155,7 +155,7 @@ const blobClient = new BlobServiceClient(`https://${account}.blob.core.windows.n
 ```
 
 #### Using Microsoft Authentication Library (MSAL)
-Alternately, you can use MSAL and write code similar to what we saw in the blog for Google Cloud. In the case of Kubernetes, the token is available at a file location configured by the mutating admission webhook. The file location is available in the  AZURE_FEDERATED_TOKEN_FILE environment variable.
+Alternately, you can use MSAL and write code similar to what we saw in the blog for Google Cloud. In the case of Kubernetes, the token is available at a file location configured by the mutating admission webhook. The value of this file location is available in the AZURE_FEDERATED_TOKEN_FILE environment variable.
 
 ```javascript
 async function k8sToken() {
