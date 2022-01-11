@@ -125,7 +125,7 @@ So for the sample service account above, the subject name will be system:service
 There are several ways to configure the Azure AD application with a "Federated Identity Credential" using this information:
 
 #### Using the Azure AD portal
-** These changes are coming soon, by end of this week (1/14/2022) **
+**These changes are coming soon, by end of this week (1/14/2022)**
 
 The Azure AD portal has added preview features to simplify this configuration. Visit the Azure AD portal, and pick your application under "App registrations". Go to "Certificated & secrets" and pick "Federated Credentials". Select "Add credential". 
 ![Azure AD App credential](/images/k8s-federate/k8s_start.jpg)
