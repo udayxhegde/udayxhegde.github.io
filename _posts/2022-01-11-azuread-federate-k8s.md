@@ -35,6 +35,7 @@ Since this is a new preview capability in AKS, there are several steps involved 
 - Install an update to the aks extension in Azure CLI 
 - create a new cluster or update an existing one with the OIDC feature
 
+See the [AKS documentation for enabling OIDC issuer](https://docs.microsoft.com/en-us/azure/aks/cluster-configuration#oidc-issuer-preview). Here are the steps we will use from that documentation. 
 ```
 # Install an update to the aks extension in Azure CLI 
 az extension [add|update] --name aks-preview
