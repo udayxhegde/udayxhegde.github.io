@@ -30,7 +30,7 @@ Let's walk through this flow end-to-end using a managed cluster in Azure. Later 
 
 ## End-to-end walk-through to demonstrate this
 
-### Part 1: Set up your Azure Kubernetes Service (AKS) cluster to issue tokens to your pods
+### Part 1: Publish an OIDC discovery endpoint for your Azure Kubernetes Service (AKS) cluster
 
 Since this is a new preview capability in AKS, there are several steps involved here:
 - Explicitly opt-in by turning on the EnableOIDCIssuer feature flag on your Azure subscription
@@ -252,17 +252,13 @@ When you run "aks --enable-oidc-issuer", it does the following:
 - For key hygiene, AKS rotates these keys every 90 days.
 - Publish the OIDC discovery document at an endpoint, so the Kubernetes tokens can be validated by other identity providers such as Azure AD.
 
-
 If you are using a managed cluster other than AKS, follow instructions from your providers such as EKS or GKE to enable this on your cluster. 
 
 For self-managed clusters, use the guidance provided [here](https://azure.github.io/azure-workload-identity/docs/installation/self-managed-clusters.html).
 
-***The utmost care needs to be exercised in deciding to enable the feature to make your cluster an identity provider.*** Getting rid of secrets for your developers is made possible by making the cluster a token issuer. When enabling the token volume projection feature, you are providing the keys the cluster uses to sign these tokens. Attackers  can access all the resources available to any pods in the cluster if these keys are compromised! Your planning considerations for turning this on must include a disciplined schedule for rotating these keys. See [this guidance](https://azure.github.io/azure-workload-identity/docs/topics/self-managed-clusters/service-account-key-rotation.html) for details on implementing the rotation of these keys.
+***The utmost care needs to be exercised in guarding the signing keys provided to your cluster.*** Getting rid of secrets for your developers is made possible by making the cluster a token issuer. When using the token volume projection feature, you are providing the keys the cluster uses to sign these tokens. Attackers  can access all the resources available to any pods in the cluster if these keys are compromised! Your planning considerations must include a disciplined schedule for rotating these keys. See [this guidance](https://azure.github.io/azure-workload-identity/docs/topics/self-managed-clusters/service-account-key-rotation.html) for details on implementing the rotation of these keys.
 
-#### Publishing the OpenID Connect discovery document
-Now that the cluster is a token issuer, it is necessary to publish the OIDC discovery document. Identity providers such as Azure AD need it to validate the tokens issued by the cluster. 
-
-When you run "az aks --enable-oidc-issuer", AKS published an OIDC discovery document for your cluster. If you are self-managing your cluster, you have a couple of options for doing this. The guidance provided [here](https://azure.github.io/azure-workload-identity/docs/installation/self-managed-clusters/oidc-issuer.html) contains two parts:
+For publishing the OIDC discovery document for your self-managed cluster, you have a couple of options. The guidance provided [here](https://azure.github.io/azure-workload-identity/docs/installation/self-managed-clusters/oidc-issuer.html) contains two parts:
 - [The OIDC discovery document](https://azure.github.io/azure-workload-identity/docs/installation/self-managed-clusters/oidc-issuer/discovery-document.html)
 - [The JSON Web Key Sets (JWKS)](https://azure.github.io/azure-workload-identity/docs/installation/self-managed-clusters/oidc-issuer/jwks.html)
 
