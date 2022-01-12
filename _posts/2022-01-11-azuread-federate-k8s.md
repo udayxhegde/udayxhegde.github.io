@@ -245,10 +245,12 @@ When you make requests to the blobClient to access storage, the blobClient calls
 ### Digging into the details.
 Let's take a closer look at a few things:
 
-#### Setting up the cluster to be a token issuer
+#### Setting up the cluster with an OIDC discovery URL
 
-When you run "aks --enable-oidc-issuer", it enables the Kubernetes [Service Account Token Volume Projection](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#service-account-token-volume-projection) feature. This feature is stable in v1.20.
-AKS provides the cluster with the necessary signing keys. For key hygiene, AKS rotates these keys every 90 days.
+When you run "aks --enable-oidc-issuer", it does the following:
+- Configure the cluster with signing keys for the Kubernetes [Service Account Token Volume Projection](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#service-account-token-volume-projection) feature. This feature is stable in v1.20.
+- For key hygiene, AKS rotates these keys every 90 days.
+- Publish the OIDC discovery document at an endpoint, so the Kubernetes tokens can be validated by other identity providers such as Azure AD.
 
 
 If you are using a managed cluster other than AKS, follow instructions from your providers such as EKS or GKE to enable this on your cluster. 
