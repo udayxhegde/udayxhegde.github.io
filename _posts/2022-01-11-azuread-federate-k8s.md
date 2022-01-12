@@ -9,7 +9,7 @@ subclass: 'post'
 author: uday
 
 ---
-Enterprises are increasingly using cloud-native technologies to build software workloads. Modern development practices are embracing concepts such as microservices and containers. Kubernetes is emerging as a popular platform for deploying software workloads. An [earlier blog post]({% post_url 2021-11-11-azuread-federate-gcp %})discussed how Azure AD workload identity federation avoids the need for secrets when accessing Azure resources from Google cloud. This blog post explores how services running in a Kubernetes cluster can also use this capability to access Azure resources. No secrets are necessary.
+Enterprises are increasingly using cloud-native technologies to build software workloads. Modern development practices are embracing concepts such as microservices and containers. Kubernetes is emerging as a popular platform for deploying software workloads. An [earlier blog post]({% post_url 2021-11-11-azuread-federate-gcp %}) discussed how Azure AD workload identity federation avoids the need for secrets when accessing Azure resources from Google cloud. This blog post explores how services running in a Kubernetes cluster can also use this capability to access Azure resources. No secrets are necessary.
 
 ![Kubernetes AAD federation](/images/k8s-federate/k8sfederate_img.png)
 
