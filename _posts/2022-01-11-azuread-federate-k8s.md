@@ -182,7 +182,7 @@ Now that you have a Kubernetes token, we can exchange this for an Azure AD acces
 - [MSAL Node](https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-node)
 - [MSAL .Net](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet)
 - [MSAL Python](https://github.com/AzureAD/microsoft-authentication-library-for-python)
-- [MSAL Java](https://github.com/AzureAD/microsoft-authentication-library-for-java)   **Please be aware [there is an issue](https://github.com/AzureAD/microsoft-authentication-library-for-java/issues/437) on MSAL Java being investigated**
+- [MSAL Java](https://github.com/AzureAD/microsoft-authentication-library-for-java)   **Please be aware [there is an issue](https://github.com/AzureAD/microsoft-authentication-library-for-java/issues/437) in this area in MSAL Java being investigated**
 
 Here's a sample code snippet to demonstrate this, extracted from my repo:
 ```javascript
@@ -260,7 +260,7 @@ For self-managed clusters, use the guidance provided [here](https://azure.github
 #### Publishing the OpenID Connect discovery document
 Now that the cluster is a token issuer, it is necessary to publish the OIDC discovery document. Identity providers such as Azure AD need it to validate the tokens issued by the cluster. 
 
-When you run "az aks --enable-oidc-issuer", AKS published an OIDC discovery document for your cluster. If you are self-managing your cluster, you have a couple of options for doing this. The guidance provided [here](https://azure.github.io/azure-workload-identity/installation/self-managed-clusters/oidc-issuer.html) contains two parts:
+When you run "az aks --enable-oidc-issuer", AKS published an OIDC discovery document for your cluster. If you are self-managing your cluster, you have a couple of options for doing this. The guidance provided [here](https://azure.github.io/azure-workload-identity/docs/installation/self-managed-clusters/oidc-issuer.html) contains two parts:
 - [The OIDC discovery document](https://azure.github.io/azure-workload-identity/docs/installation/self-managed-clusters/oidc-issuer/discovery-document.html)
 - [The JSON Web Key Sets (JWKS)](https://azure.github.io/azure-workload-identity/docs/installation/self-managed-clusters/oidc-issuer/jwks.html)
 
