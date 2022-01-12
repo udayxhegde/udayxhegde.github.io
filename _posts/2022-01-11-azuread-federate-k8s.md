@@ -22,7 +22,9 @@ There are four parts to get this working end-to-end in a Kubernetes cluster:
 3. Azure AD applications are configured to trust the Kubernetes tokens
 4. The Kubernetes tokens are exchanged for Azure AD tokens, and used to access Azure AD protected resources such as Azure and Microsoft Graph.
 
-Since this pattern uses constructs native to Kubernetes, it works where ever you deploy your cluster. It could be a cluster managed by a cloud provider such Azure or AWS or GCP. Or it could be a cluster you are self-managing in a cloud or on-premises. The Microsoft [published guidance](https://azure.github.io/azure-workload-identity) and [open-source components](https://github.com/Azure/azure-workload-identity/) make it easy to deploy this in any cluster.
+Since this pattern uses constructs native to Kubernetes, it works where ever you deploy your cluster. It could be a cluster managed by a cloud provider such Azure or AWS or GCP. Or it could be a cluster you are self-managing in a cloud or on-premises.
+
+Microsoft announced a new [open-source project](https://azure.github.io/azure-workload-identity) called Azure AD workload identity for Kubernetes to make it easy to deploy this in any cluster, whether it is running in Azure or elsewhere.
 
 Let's walk through this flow end-to-end using a managed cluster in Azure. Later in the blog, we will look at more details such as things to consider for your self-managed cluster.  
 
@@ -262,7 +264,7 @@ When you run "az aks --enable-oidc-issuer", AKS published an OIDC discovery docu
 - [The OIDC discovery document](https://azure.github.io/azure-workload-identity/installation/self-managed-clusters/oidc-issuer/discovery-document.html)
 - [The JSON Web Key Sets (JWKS)](https://azure.github.io/azure-workload-identity/installation/self-managed-clusters/oidc-issuer/jwks.html)
 
-Note that the JWKS has to be refreshed each time you rotate the keys. The instructions for how to do this are part of the guidance for [service account key rotation]](https://azure.github.io/azure-workload-identity/topics/self-managed-clusters/service-account-key-rotation.html#3-update-the-jwks).
+Note that the JWKS has to be refreshed each time you rotate the keys. The instructions for how to do this are part of the guidance for [service account key rotation](https://azure.github.io/azure-workload-identity/topics/self-managed-clusters/service-account-key-rotation.html#3-update-the-jwks).
 
 Alternatively, you can also investigate a Kubernetes feature called [Service Account Issuer Discovery](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#service-account-issuer-discovery). 
 
@@ -304,6 +306,7 @@ The best practice for these tokens is to have a unique audience value for each p
 The Microsoft Authentication Library (MSAL) supports using the Kubernetes token as a clientAssertion in the Confidential Client flows. The code snippet earlier in this blog demonstrated this.
 
 The Azure Identity SDK has updated the DefaultAzureCredential to support this pattern.  Under the covers, DefaultAzureCredential will look for the bread crumbs left behind by the mutating webhook. If it finds the AZURE_FEDERATED_TOKEN_FILE, AZURE_CLIENT_ID, and AZURE_TENANT_ID environment set, it uses those values to get an Azure AD token.
+
 
 ### In conclusion
 Azure AD workload identity federation is a new capability that allows you to get rid of secrets in several scenarios such as Kubernetes, services running in Google Cloud, and GitHub Actions workflow. Stay tuned for many more scenarios where you can use this capability to get rid of secrets.
