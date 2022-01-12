@@ -64,7 +64,7 @@ You will notice this section showing where AKS has published the OIDC discovery 
 "oidcIssuerProfile": {
     "enabled": true,
     "issuerUrl": "https://oidc.prod-aks.azure.com/700765c7-88f3-4d93-b606-24947451ea53/"
-  },
+  }
 ```
 
 #### Enable the mutating admission webhook to simplify config for your deployments
@@ -253,18 +253,18 @@ AKS provides the cluster with the necessary signing keys. For key hygiene, AKS r
 
 If you are using a managed cluster other than AKS, follow instructions from your providers such as EKS or GKE to enable this on your cluster. 
 
-For self-managed clusters, use the guidance provided [here](https://azure.github.io/azure-workload-identity/installation/self-managed-clusters.html).
+For self-managed clusters, use the guidance provided [here](https://azure.github.io/azure-workload-identity/docs/installation/self-managed-clusters.html).
 
-***The utmost care needs to be exercised in deciding to enable the feature to make your cluster an identity provider.*** Getting rid of secrets for your developers is made possible by making the cluster a token issuer. When enabling the token volume projection feature, you are providing the keys the cluster uses to sign these tokens. Attackers  can access all the resources available to any pods in the cluster if these keys are compromised! Your planning considerations for turning this on must include a disciplined schedule for rotating these keys. See [this guidance](https://azure.github.io/azure-workload-identity/topics/self-managed-clusters/service-account-key-rotation.html) for details on implementing the rotation of these keys.
+***The utmost care needs to be exercised in deciding to enable the feature to make your cluster an identity provider.*** Getting rid of secrets for your developers is made possible by making the cluster a token issuer. When enabling the token volume projection feature, you are providing the keys the cluster uses to sign these tokens. Attackers  can access all the resources available to any pods in the cluster if these keys are compromised! Your planning considerations for turning this on must include a disciplined schedule for rotating these keys. See [this guidance](https://azure.github.io/azure-workload-identity/docs/topics/self-managed-clusters/service-account-key-rotation.html) for details on implementing the rotation of these keys.
 
 #### Publishing the OpenID Connect discovery document
 Now that the cluster is a token issuer, it is necessary to publish the OIDC discovery document. Identity providers such as Azure AD need it to validate the tokens issued by the cluster. 
 
 When you run "az aks --enable-oidc-issuer", AKS published an OIDC discovery document for your cluster. If you are self-managing your cluster, you have a couple of options for doing this. The guidance provided [here](https://azure.github.io/azure-workload-identity/installation/self-managed-clusters/oidc-issuer.html) contains two parts:
-- [The OIDC discovery document](https://azure.github.io/azure-workload-identity/installation/self-managed-clusters/oidc-issuer/discovery-document.html)
-- [The JSON Web Key Sets (JWKS)](https://azure.github.io/azure-workload-identity/installation/self-managed-clusters/oidc-issuer/jwks.html)
+- [The OIDC discovery document](https://azure.github.io/azure-workload-identity/docs/installation/self-managed-clusters/oidc-issuer/discovery-document.html)
+- [The JSON Web Key Sets (JWKS)](https://azure.github.io/azure-workload-identity/docs/installation/self-managed-clusters/oidc-issuer/jwks.html)
 
-Note that the JWKS has to be refreshed each time you rotate the keys. The instructions for how to do this are part of the guidance for [service account key rotation](https://azure.github.io/azure-workload-identity/topics/self-managed-clusters/service-account-key-rotation.html#3-update-the-jwks).
+Note that the JWKS has to be refreshed each time you rotate the keys. The instructions for how to do this are part of the guidance for [service account key rotation](https://azure.github.io/azure-workload-identity/docs/topics/self-managed-clusters/service-account-key-rotation.html#3-update-the-jwks).
 
 Alternatively, you can also investigate a Kubernetes feature called [Service Account Issuer Discovery](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#service-account-issuer-discovery). 
 
