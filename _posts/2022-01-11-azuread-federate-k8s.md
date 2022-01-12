@@ -139,7 +139,7 @@ Populate the cluster issuer URL, the namespace and service account for your depl
 ![Azure AD K8s credential](/images/k8s-federate/k8s_done.jpg)
 
 #### other ways to achieve this
-You can also use the Azure CLI or do this programmatically. See [this blog post]({% post_url 2021-11-11-azuread-federate-gcp %}) for details.
+You can also use the Azure CLI or do this programmatically. See [this blog post]({% post_url 2021-11-11-azuread-federate-gcp %}#AzureADTrust) for details.
 
 ### Part 4: Access Azure resources using the Kubernetes token
 Kubernetes issues a token for the service account at a file location specified by the mutating webhook. This token can be exchanged for an Azure AD access token. My [github repo](https://github.com/udayxhegde/aad-federate-blobstore-node) provides a simple example to demonstrate this exchange. It shows this for both Azure Identity SDK and Microsoft Authentication Library.

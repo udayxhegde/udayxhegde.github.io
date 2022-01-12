@@ -38,7 +38,7 @@ Tokens issued by Google to the service account will have this unique id as the s
 
 We will use these details to configure a trust on Azure AD applications, to allow your application to trust tokens issued by Google to your service account.
 
-### Part 2: Configuring Azure AD application to trust a Google token
+### <a name="AzureADTrust"></a> Part 2: Configuring Azure AD application to trust a Google token
 Azure AD applications support the capability to add "federatedIdentityCredentials" to set up this trust. You can add up to twenty of these trusts to each Azure AD application.
 
 The most important parts of the federated identity credential are the following:
@@ -111,7 +111,7 @@ Now that you have an identity token from Google, we can exchange this for an Azu
 - [MSAL Node](https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-node)
 - [MSAL .Net](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet)
 - [MSAL Python](https://github.com/AzureAD/microsoft-authentication-library-for-python)
-- [MSAL Java](https://github.com/AzureAD/microsoft-authentication-library-for-java)
+- [MSAL Java](https://github.com/AzureAD/microsoft-authentication-library-for-java)   **Please be aware [there is an issue](https://github.com/AzureAD/microsoft-authentication-library-for-java/issues/437) in this area in MSAL Java being investigated**
 
 Here's a sample code snippet to demonstrate this, extracted from [my GitHub repo](https://github.com/udayxhegde/aad-federate-keyvault-node)
 ```javascript
