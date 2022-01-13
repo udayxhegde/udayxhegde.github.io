@@ -300,6 +300,11 @@ Once the Service Account Token Volume Projection feature is turned on, Kubernete
 
 The best practice for these tokens is to have a unique audience value for each provider you intend to use the token. The webhook uses the Microsoft recommended value for tokens meant for Azure AD (api://AzureADTokenExchange). This value needs to match the value you configured the Federated Identity Credential on your Azure AD application.
 
+#### Security boundaries provided by Kubernetes namespaces
+The norm for many companies is to have a single Kubernetes cluster shared by numerous development teams. Resources available to one team mustn't be accessible by another team sharing the same cluster. Kubernetes namespaces ensure this boundary between different teams. Kubernetes adds the namespace in the subject identifier of the token it issues. A service in one namespace cannot get a token to access resources available to a service in another namespace.
+Here's an example:
+Let's take a service account called "BlobService" in namespace "Team-A". The subject identifier in the Kubernetes token will be "system:serviceaccount:Team-A:BlobService". Let's configure this subject identifier in the federated identity credential on Azure AD application "AppA". Team-B can not get a token with this same subject identifier. Let's assume Team-B created a service account called "BlobService" in their namespace. Kubernetes tokens for that service account will have a subject claim of "system:serviceaccount:Team-B:BlobService". Those tokens can't be used to get Azure AD tokens for AppA. Azure AD will not find a matching subject identifier for AppA.
+
 #### Microsoft Identity SDK support for exchanging tokens
 The Microsoft Authentication Library (MSAL) supports using the Kubernetes token as a clientAssertion in the Confidential Client flows. The code snippet earlier in this blog demonstrated this.
 
