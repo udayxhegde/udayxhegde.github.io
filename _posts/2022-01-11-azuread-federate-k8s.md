@@ -175,7 +175,7 @@ async function k8sToken() {
   });
 }
 ```
-We can exchange this token for an Azure AD access token. This is identical to what was described in the Google Cloud blog post and repeated here for completeness.
+<a name="ExchangeMSAL"></a>We can exchange this token for an Azure AD access token. This is identical to what was described in the Google Cloud blog post and repeated here for completeness.
 
 Now that you have a Kubernetes token, we can exchange this for an Azure AD access token. The Microsoft Authentication Library (MSAL) is updated to allow you to pass the Kubernetes token as a "clientAssertion". The following MSAL versions have support for client assertions:
 - [MSAL Go (Preview)](https://github.com/AzureAD/microsoft-authentication-library-for-go)
