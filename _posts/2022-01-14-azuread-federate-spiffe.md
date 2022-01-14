@@ -98,7 +98,7 @@ kubectl exec -n spire spire-server-0 -- \
 #### Now deploy the OIDC server
 The SPIRE implementation of the OIDC discovery provider is at https://gcr.io/spiffe-io/oidc-discovery-provider. 
 
-Azure AD requires that the JWKS pointed by the OIDC discovery URL contains a "use" key with the value "sig". By default, the SPIRE OIDC discovery provider does not add this key. Adding this key is [an option added recently](https://github.com/spiffe/spire/issues/2623) to add this key. It's available in v1.1.2 or above as well as the recent nightly builds of the OIDC discovery provider at gcr.io/spiffe-io/oidc-discovery-provider:nightly. 
+Azure AD requires that the JWKS pointed by the OIDC discovery URL contains a "use" key with the value "sig". By default, the SPIRE OIDC discovery provider does not add this key. Adding this key is [a recent option](https://github.com/spiffe/spire/issues/2623). It's available in v1.1.2 or above as well as the recent nightly builds of the OIDC discovery provider at gcr.io/spiffe-io/oidc-discovery-provider:nightly. 
 
 Go to the deployment/spiffe/oidc directory, and deploy the OIDC discovery service.
 ```
