@@ -111,7 +111,7 @@ Now that you have an identity token from Google, we can exchange this for an Azu
 - [MSAL Node](https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-node)
 - [MSAL .Net](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet)
 - [MSAL Python](https://github.com/AzureAD/microsoft-authentication-library-for-python)
-- [MSAL Java](https://github.com/AzureAD/microsoft-authentication-library-for-java)   **Please be aware [there is an issue](https://github.com/AzureAD/microsoft-authentication-library-for-java/issues/437) in this area in MSAL Java being investigated**
+- [MSAL Java](https://github.com/AzureAD/microsoft-authentication-library-for-java)  
 
 Here's a sample code snippet to demonstrate this, extracted from [my GitHub repo](https://github.com/udayxhegde/aad-federate-keyvault-node)
 ```javascript

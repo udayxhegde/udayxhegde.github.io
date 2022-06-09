@@ -104,30 +104,14 @@ on:
 
 permissions:
    id-token: write
-```
-
-#### Download the latest beta version of Az CLI
-Add a step in your jobs to download the beta version of Azure CLI. This updated CLI has added a parameter to az login called --federated-token. It allows the CLI to get an Azure AD access token using the GitHub token. This additional download step is only needed during the week of Oct 27th, till Az CLI changes become generally available.
-```
-    - name: Installing CLI-beta for OIDC
-      run: |
-        cd ../..
-        CWD="$(pwd)"
-        python3 -m venv oidc-venv
-        . oidc-venv/bin/activate
-        echo "activated environment"
-        python3 -m pip install -q --upgrade pip
-        echo "started installing cli beta" 
-        pip install -q --extra-index-url https://azcliprod.blob.core.windows.net/beta/simple/ azure-cli
-        echo "***************installed cli beta*******************"
-        echo "$CWD/oidc-venv/bin" >> $GITHUB_PATH
+   contents: read
 ```
 
 #### Update your azure login action to the version that supports federation
 The Azure login action has been updated to use the GitHub token if it is available. It will also perform the token exchange with Azure AD and get an Azure AD access token. Later actions can use this Azure AD token to deploy to Azure resources.
 ```
 - name: 'Az CLI login'
-      uses: azure/login@v1.4.0
+      uses: azure/login@v1
       with:
         client-id: <your Azure AD Application id>
         tenant-id: <your Azure AD tenant id>
