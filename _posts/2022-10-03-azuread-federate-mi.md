@@ -116,6 +116,7 @@ The cool thing is, getting tokens for managed identities in this pattern is iden
 
 When using the azure identity SDK, you can simply use the DefaultAzureCredential for either application or managed identities. It uses the environment variables setup by the webhook (such as client-id from the annotation on service accounts) to determine which identity to get a token for. 
 
+For more details, see the Microsoft workload identity federation documents for [managed identities](https://learn.microsoft.com/en-us/azure/active-directory/develop/workload-identity-federation) and [AKS](https://learn.microsoft.com/en-us/azure/aks/workload-identity-overview])
 
 ## Caveats, limitations, etc
 - You can only add 20 federated credentials on an identity, both user-assigned managed identities and application identities. To go beyond this limit, use more identities.
