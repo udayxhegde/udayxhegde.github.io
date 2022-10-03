@@ -41,7 +41,10 @@ az upgrade
 To add a federated credential:
 
 ```
-az identity federated-credential create --name myNameForThisCredential --identity-name myUserAssignedManagedIdentityName --resource-group myResourceGroup --issuer <issuer-url> --subject <subject name>
+az identity federated-credential create --name myNameForThisCredential \
+            --identity-name myUserAssignedManagedIdentityName \
+            --resource-group myResourceGroup --issuer <issuer-url> \
+            --subject <subject name>
 ```
 
 If you prefer the portal experience, you can also do this in the Azure portal, as shown later in this blog post. 
@@ -56,7 +59,9 @@ Azure Kubernetes Service (AKS) has updates to support the federation natively, s
 You can now create an AKS cluster with the federation and the mutating webhook discussed in our earlier Kubernetes blog post.
 
 ```
-az aks create -g myResourceGroup -n myAKSCluster --node-count 1 --enable-oidc-issuer --enable-workload-identity --generate-ssh-keys
+az aks create -g myResourceGroup -n myAKSCluster --node-count 1 \
+              --enable-oidc-issuer --enable-workload-identity \
+              --generate-ssh-keys
 ```
 The enable-oidc-issuer will turn on the federation on the cluster and give you the issuer URL. You will need this URL to configure your federated credential on your user-assigned managed identity.
 
@@ -71,7 +76,10 @@ Once you have a cluster and know its OIDC issuer URL, you are ready to add a fed
 
 Here's an example for my cluster using Azure CLI: 
 ```
-az identity federated-credential create --name k8s-federated-cred --identity-name workload-federate-MI1 --resource-group codesamples-rg --issuer https://oidc.prod-aks.azure.com/11e8eca4-7f37-4c0d-b0f4-255dd5e0a0da/ --subject system:serviceaccount:demok8s:demosa
+az identity federated-credential create --name k8s-federated-cred \
+            --identity-name workload-federate-MI1 --resource-group codesamples-rg 
+            --issuer https://oidc.prod-aks.azure.com/11e8eca4-7f37-4c0d-b0f4-255dd5e0a0da/ \
+            --subject system:serviceaccount:demok8s:demosa
 ```
 
 And here's the expected output from a successful configuration of the federated credential:
