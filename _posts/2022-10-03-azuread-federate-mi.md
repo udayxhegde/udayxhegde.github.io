@@ -59,9 +59,8 @@ Azure Kubernetes Service (AKS) has updates to support the federation natively, s
 You can now create an AKS cluster with the federation and the mutating webhook discussed in our earlier Kubernetes blog post.
 
 ```
-az aks create -g myResourceGroup -n myAKSCluster --node-count 1 \
-              --enable-oidc-issuer --enable-workload-identity \
-              --generate-ssh-keys
+az aks create -g myResourceGroup -n myAKSCluster --node-count 1 --enable-oidc-issuer \
+              --enable-workload-identity --generate-ssh-keys
 ```
 The enable-oidc-issuer will turn on the federation on the cluster and give you the issuer URL. You will need this URL to configure your federated credential on your user-assigned managed identity.
 
@@ -122,9 +121,9 @@ When using the azure identity SDK, you can simply use the DefaultAzureCredential
 - You can only add 20 federated credentials on an identity, both user-assigned managed identities and application identities. To go beyond this limit, use more identities.
 - Federated tokens need to be signed with RS256 algorithm. And you cant use federated tokens issued by Azure AD yet. 
 - Timing issues. When you create a federated credential on a managed identity or application identity, it will take a few seconds for the change to propagate across Azure AD. If you try to use the credential immediately after you create it, there is a chance that the request will fail due to propagation delays. And this failure itself can lead to long delays of a few minutes due to information cached at the Azure AD token issuer. There are a couple of options to deal with this: make sure you introduce a delay of about a minute between creating the credential and using it. And consider adding a retry-backoff strategy to handle failures. This retry logic is easier said than done. This issue ought to be fixed in Azure AD to avoid this issue.
-- Managed identities in certain regions will not have the support for federated credentials, see the [documents page](https://learn.microsoft.com/en-us/azure/active-directory/develop/workload-identity-federation) for the updated list.
+- Managed identities in certain regions will not have the support for federated credentials, see the [Microsoft documents page](https://learn.microsoft.com/en-us/azure/active-directory/develop/workload-identity-federation) for the updated list.
 
 ## In conclusion
-User-assign Managed identities now support Azure AD workload identity federation. This capability simplifies how your software workloads in Kubernetes, Google, or GitHub can access Azure resources without needing secrets! Stay tuned for many more scenarios where you can use this capability to get rid of secrets.
+User-assigned Managed identities now support Azure AD workload identity federation. This capability simplifies how your software workloads in Kubernetes, Google, or GitHub can access Azure resources without needing secrets! Stay tuned for many more scenarios where you can use this capability to get rid of secrets.
 
 If you have any comments, feedback, or suggestions on this topic, I would love to hear from you. [DM me on Twitter](https://twitter.com/messages/compose?recipient_id=1446741344)
