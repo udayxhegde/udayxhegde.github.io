@@ -1,14 +1,14 @@
-  ---
-  layout: post
-  current: post
-  navigation: True
-  title: Azure Managed Identities with Workload Identity Federation
-  date: 2022-09-30 10:00:00
-  class: post-template
-  subclass: 'post'
-  author: uday
+---
+layout: post
+current: post
+navigation: True
+title: Azure Managed Identities with Workload Identity Federation
+date: 2022-09-30 10:00:00
+class: post-template
+subclass: 'post'
+author: uday
 
-  ---
+---
   Yes! Workload Identity Federation is now available in public preview on User-assigned Managed Identities too! This change makes it easier for developers to access Azure resources from their software services running in Kubernetes clusters or running in the Google cloud or from GitHub Actions workflows. There have been several blogs posted on this site, such as [Kubernetes]({% post_url 2022-01-11-azuread-federate-k8s %}),  [GitHub]({% post_url 2021-10-27-azuread-federate-github-actions %}) and [SPIFFE]({% post_url 2022-01-14-azuread-federate-spiffe %}), which walk through using an Azure AD application registration to configure workload identity federation. This blog walks you through using managed identities instead of application registrations to enable those scenarios.
 
   ![Kubernetes AAD federation](/images/mi-federate/managed-id-blog.jpg)
