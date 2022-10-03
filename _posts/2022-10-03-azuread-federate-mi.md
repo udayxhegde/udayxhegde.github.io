@@ -9,7 +9,7 @@ subclass: 'post'
 author: uday
 
 ---
-Yes! Workload Identity Federation is now available in public preview on User-assigned Managed Identities too! This change makes it easier for developers to access Azure resources from their software services running in Kubernetes clusters or running in the Google cloud or from GitHub Actions workflows. There have been several blogs posted on this site, such as [Kubernetes]({% post_url 2022-01-11-azuread-federate-k8s %}),  [GitHub]({% post_url 2021-10-27-azuread-federate-github-actions %}) and [SPIFFE]({% post_url 2022-01-14-azuread-federate-spiffe %}), which walk through using an Azure AD application registration to configure workload identity federation. This blog walks you through using managed identities instead of application registrations to enable those scenarios.
+Yes! Workload Identity Federation is now available in public preview on user-assigned Managed Identities too! This change makes it easier for developers to access Azure resources from their software services running in Kubernetes clusters or running in the Google cloud or from GitHub Actions workflows. There have been several blogs posted on this site, such as [Kubernetes]({% post_url 2022-01-11-azuread-federate-k8s %}),  [GitHub]({% post_url 2021-10-27-azuread-federate-github-actions %}) and [SPIFFE]({% post_url 2022-01-14-azuread-federate-spiffe %}), which walk through using an Azure AD application registration to configure workload identity federation. This blog walks you through using managed identities instead of application registrations to enable those scenarios.
 
 ![Kubernetes AAD federation](/images/mi-federate/managed-id-blog.jpg)
 
@@ -21,7 +21,7 @@ Managed identities, on the other hand, were built with the developer scenarios i
 
 Now that workload identity federation is supported on managed identities, you can use these identities for software workloads running outside Azure: including your pods running in an on-premises Kubernetes cluster or GitHub Actions workflows. You now have a choice of using either managed identities or application identities, depending on which is more convenient for you. The federation capabilities are identical in both cases: you can add a trust (a federated credential) to either of these identities and use a trusted federated token to get an Azure AD access token for these identities.
 
-Note: Managed Identities come in two kinds: System-assigned and User-assigned. The lifecycle of system-assigned managed identity is tied to an Azure compute resource like VM, so it does not make sense to allow adding a workload identity federation on those identities. Workload identity federation is supported only on user-assigned managed identities.
+Note: Managed Identities come in two kinds: system-assigned and user-assigned. The lifecycle of system-assigned managed identity is tied to an Azure compute resource like VM, so it does not make sense to allow adding a workload identity federation on those identities. Workload identity federation is supported only on user-assigned managed identities.
 
 # Configuring managed identities with workload identity federation
 First, you need to be able to create a user-assigned managed identity. You can achieve this if you have an Azure subscription and are in the "Managed Identity Contributor" role. You can then assign that identity with the necessary access to resources you own or manage, such as Azure storage.
