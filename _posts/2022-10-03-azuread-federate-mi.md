@@ -60,7 +60,7 @@ You can now create an AKS cluster with the federation and the mutating webhook d
 
 ```
 az aks create -g myResourceGroup -n myAKSCluster --node-count 1 --enable-oidc-issuer \
-              --enable-workload-identity --generate-ssh-keys
+              --enable-workload-identity
 ```
 The enable-oidc-issuer will turn on the federation on the cluster and give you the issuer URL. You will need this URL to configure your federated credential on your user-assigned managed identity.
 
