@@ -28,14 +28,22 @@ First, you need to be able to create a user-assigned managed identity. You can a
 
 # Adding a federated credential using Azure CLI
 
-You will need az cli version 2.40.0 or higher. Check your az version.
+You will need az cli version 2.40.0 or higher. And aks-preview extension 0.5.102 or later. You can check both of these using az version.
 ```
 az version
 ```
-And if it is lower than 2.40.0, first upgrade it.
+And The azure-cli is lower than 2.40.0, first upgrade it.
 
 ```
 az upgrade
+```
+If you dont see aks-preview as an extension shown in az version, install the aks-review
+```
+az extension add --name aks-preview
+```
+if the aks-preview is lower than 0.5.102, upgrade it.
+```
+az extension update --name aks-preview
 ```
 
 To add a federated credential:
@@ -68,7 +76,7 @@ The enable-workload-identity will add the webhook. The webhook simplifies your c
 
 If you have an existing AKS cluster that is at version 1.21 or above, you can also update that cluster with this support as follows:
 ```
-az aks update -n <ClusterName>-g myResourceGroup --enable-oidc-issuer --enable-workload-identity
+az aks update -n <ClusterName> -g myResourceGroup --enable-oidc-issuer --enable-workload-identity
 ```
 
 Once you have a cluster and know its OIDC issuer URL, you are ready to add a federated credential on your managed identity.
