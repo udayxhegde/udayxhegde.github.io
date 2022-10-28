@@ -3,7 +3,7 @@ layout: post
 current: post
 navigation: True
 title: Using Azure policy on managed identities to control workload identity federation
-date: 2022-10-31 10:00:00
+date: 2022-10-28 10:00:00
 class: post-template
 subclass: 'post'
 author: uday
