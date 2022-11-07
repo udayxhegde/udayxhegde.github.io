@@ -107,10 +107,11 @@ While pod-managed identity in AKS provides powerful capabilities to assign ident
 
 
 # How is Azure workload identity for Kubernetes different?
-Kubernetes added Service Account Token Volume Projection (stable in v1.20), which allows Kubernetes to issue tokens to service accounts at a file path. Using these tokens, you can federate with an external identity provider such as Azure Active Directory to access cloud resources.  [Application identities]({% post_url 2022-01-11-azuread-federate-k8s %}) and [Managed identities]({% post_url 2022-10-03-azuread-federate-mi %}) in Azure AD support this pattern. Azure workload identity for Kubernetes uses workload identity federation to overcome the limitations of pod-managed identity.
+Kubernetes added Service Account Token Volume Projection (stable in v1.20), which allows Kubernetes to issue tokens to service accounts at a file path. Using these tokens, you can federate with an external identity provider such as Azure Active Directory to access cloud resources. My earlier blog posts on [Application identities]({% post_url 2022-01-11-azuread-federate-k8s %}) and [Managed identities]({% post_url 2022-10-03-azuread-federate-mi %}) provide details on how this pattern works. Azure workload identity for Kubernetes uses workload identity federation to overcome the limitations of pod-managed identity.
 - Since the Azure AD identities do not need to be assigned to the cluster nodes, it avoids scale and performance issues. This also improves the overall security posture.
 - Developers can use native Kubernetes constructs and not depend on the cluster admin to provision identities for their software workloads.
 - It works consistently in any Kubernetes cluster: in Azure, in AWS, in GCP, or on-premises. It also works in any nodepools.
+- It works consistently for both Application identities and managed identities in Azure AD, without needing any secrets.
 
 Azure workload identity design ensures that developers can continue using DefaultAzureCredential in their code. This design uses an open-source admission webhook that can be added to any Kubernetes cluster. AKS adds this webhook when you enable workload identity. The webhook uses annotations on service accounts to simplify the configuration for acquiring tokens. The DefaultAzureCredential in the Azure Identity SDK detects these environment variables to facilitate the token acquisition from Azure AD. 
 
