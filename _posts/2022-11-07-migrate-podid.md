@@ -216,6 +216,8 @@ The Azure Identity SDK is updated to use the environment variables set up by the
 -	Python: 1.7.0
 -	Go: not supported yet 
 
+The sidecar should be used as a stopgap while you plan to update your workload with a more recent version of Azure Identity SDK.
+
 ### Step 6: Remove the pod identity binding
 At this point, we can safely remove the aadpodidbinding from the deployment yaml, and redeploy.
 
