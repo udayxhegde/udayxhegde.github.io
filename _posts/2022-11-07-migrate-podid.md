@@ -276,6 +276,6 @@ In some cases, your deployment may be using an init container. This is typically
 Since the init container runs before the sidecar is injected, token requests from the init container will not be able to use the sidecar model. It is necessary for the code running in the init container to exchange the Kubernetes token for an Azure AD token. The container has to either use the latest Azure Identity SDK or use the ClientAssertionCredential in the Microsoft Authentication Library (MSAL). See [here]({% post_url 2022-01-11-azuread-federate-k8s %}#ExchangeToken) for some examples.
 
 ## In conclusion
-Azure workload identity replaces pod identity that is deprecated. As you might have observed from reading this blog post, moving from Azure pod idenitty to Azure workload identity is seamless and straight forward. Since these features can run side-by-side, each deployment can be upgraded independent of each other. 
+Azure workload identity replaces pod identity that is deprecated. As you might have observed from this blog post, moving from Azure pod identity to Azure workload identity is seamless and straightforward. Since these features can run side-by-side, you can upgrade each deployment independently.
 
 If you have any comments, feedback, or suggestions on this topic, I would love to hear from you. [DM me on Twitter](https://twitter.com/messages/compose?recipient_id=1446741344)
