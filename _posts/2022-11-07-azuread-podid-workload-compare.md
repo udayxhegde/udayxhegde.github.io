@@ -14,25 +14,25 @@ Managed identities in Azure allow software workloads to access Azure resources w
 ![Title image](/images/podid/pod-compare.jpg)
 
 # What is Azure AD pod-managed identity in AKS?
-Pod-managed identity uses the open-source pod identity project that supports using managed identities in Kubernetes clusters. [See the documentation](https://learn.microsoft.com/en-us/azure/aks/use-azure-ad-pod-identity) on how to register the feature and enable it.
+Pod-managed identity uses the [open-source pod identity project0](https://github.com/Azure/aad-pod-identity) that supports using managed identities in Kubernetes clusters. [See the AKS documentation](https://learn.microsoft.com/en-us/azure/aks/use-azure-ad-pod-identity) on how to register the feature and enable it.
 
 The design of pod-managed identity requires the managed identities to be available on all the nodes in the Kubernetes clusters. Pod-managed identity intercepts all token requests to ensure that pods can get tokens only for the managed identities authorized for their use.  Three Custom Resource Definitions (CRDs) are added to the cluster when this feature is enabled. 
 - AzureIdentity CRD allows you to represent your managed identity in a namespace in your Kubernetes clusters. 
 - AzureIdentityBinding CRD binds an AzureIdentity to a selector in the namespace.  Any pod or deployment spec using this selector can request tokens for the managed identities associated with the binding.
 - AzurePodIdentityException CRD enables you to allow selective pods to get tokens for any managed identity assigned to the cluster nodes! 
 
-When you enable pod-identity in an AKS cluster, a DeamonSet of “nmi” (Node Managed Identity) pods is deployed in the kube-system namespace. These pods intercept all token requests to the managed identity token endpoint, also known as the Instant Metadata Service (IMDS) endpoint.
-Nmi executes the following checks before forwarding the request to the IMDS endpoint. 
+When you enable pod-identity in an AKS cluster, a DaemonSet of NMI (Node Managed Identity) pods is deployed in the kube-system namespace. These pods intercept all token requests to the managed identity token endpoint, also known as the Instant Metadata Service (IMDS) endpoint.
+NMI executes the following checks before forwarding the request to the IMDS endpoint. 
 - Check if the pod has an AzurePodIdentityException. If it has one, pass the token request to IMDS without additional checks.
 - Otherwise, verify that the pod has an AzureIdentityBinding. If there is no binding, reject the token request.
-- If the token request includes a client_id, the nmi verifies that it matches one of the identities associated with the binding used by the pod. The token request is sent to the IMDS endpoint if there is a match.  Else, the token request fails.  
-- If the token request does not include a client_id, the nmi decides which identity to use.  It picks one of the matching identities associated with the binding for the token request.
+- If the token request includes a client_id, the NMI verifies that it matches one of the identities associated with the binding used by the pod. The token request is sent to the IMDS endpoint if there is a match.  Else, the token request fails.  
+- If the token request does not include a client_id, the NMI decides which identity to use.  It picks one of the matching identities associated with the binding for the token request.
 
 Now let's walk through how this works step-by-step.
 
 ### Step 1: When pod identity is enabled in the cluster
 
-Enabling pod identity in the cluster results in three CRDS to be configured in the cluster and the nmi pods to be deployed on every cluster node. To enable pod identity, a cluster admin has to run “az aks update –enable-pod-identity.” 
+Enabling pod identity in the cluster results in three CRDS to be configured in the cluster and the NMI pods to be deployed on every cluster node. To enable pod identity, a cluster admin has to run “az aks update –enable-pod-identity.” 
 
 ![nmi pods](/images/podid/podk8s-1.jpg)
 
@@ -76,7 +76,7 @@ spec:
       containers:
 </pre>
 
-Here's a view of showing the nmi allowing or disallowing token requests based on the binding used by the pods. 
+Here's a view of showing the NMI allowing or disallowing token requests based on the binding used by the pods. 
 
 ![identity usage](/images/podid/podk8s-3.jpg)
 
@@ -117,7 +117,7 @@ Azure workload identity design ensures that developers can continue using Defaul
 
 Upgrading from pod-managed identity to workload identity is simple since these features can run side-by-side. [Read this blog post]({% post_url 2022-11-07-migrate-podid %}) for a step-by-step walkthrough of this upgrade.
 
-From the security perspective, you are making the Kubernetes cluster a token issuer and using the tokens to access Azure resources. The token signing keys need to be stored securely and rotated regularly. Azure Kubernetes Service rotates these keys every month. If you are not using a managed cluster, you need to plan for key hygiene and rotate these keys regularly.
+From the security perspective, you are making the Kubernetes cluster a token issuer and using the tokens to access Azure resources. The token signing keys need to be stored securely and rotated regularly. Azure Kubernetes Service rotates these keys every three months. If you are using a self-managed cluster, you need to plan for key hygiene and rotate these keys regularly.
 
 ## In conclusion
 Pod-managed identity enables the use of managed identities in Kubernetes clusters. However, it has several limitations that impact scale, performance, and developer experience. It also weakens the security posture with identities assigned to every cluster node. Azure workload identity leverages recent updates to Kubernetes to address these limitations. Plan to upgrade your workloads from pod-managed identity to workload identity. 
