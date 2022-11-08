@@ -252,9 +252,9 @@ kubectl.exe get AzureIdentityBinding -n app -o json |  \
    jq -r '.items[] | select (.spec.selector | test("pod-kvtable-binding")).spec.azureIdentity' 
 ```
 
-tells me that two AzureIdentities are matching this selector: podid-kv and podid-table. The client_id's matching these are: f7b76e44-617f-490a-ab20-d963fcf7d54f and 7ed66f16-433f-4ef5-8b10-a72cdfecd217 respectively. Since I am dealing with two managed identities here, my code has to indicate which managed identity to use by passing the client_id parameter in the DefaultAzureCredential.
+tells me that two AzureIdentities are matching this selector: podid-kv and podid-table. The client_id's matching these are f7b76e44-617f-490a-ab20-d963fcf7d54f and 7ed66f16-433f-4ef5-8b10-a72cdfecd217 respectively. Since I am dealing with two managed identities here, my code has to configure DefaultAzureCredential with the client_id of the managed identity we want to use.
 
-In these cases, it is ok to skip the client-id annotation on the service account and configure them separately to match your existing code that should already be dealing with these multiple identities.
+In these cases, skip the client-id annotation on the service account. 
 ```
 kind: ServiceAccount
 metadata:
@@ -272,7 +272,7 @@ metadata:
     azure.workload.identity/use: "true"
 ```
 
-Since you will be calling DefaultAzureCredential({ManagedIdentityClientId = client_id}), the Azure Identity SDK will still work with the remaining parameters set up by the mutating webhook to exchange the Kubernetes token for an Azure AD token correctly.
+Since you will be calling DefaultAzureCredential({ManagedIdentityClientId = client_id}), the Azure Identity SDK will not need the AZURE_CLIENT_ID environment variabile. It will use the remaining parameters set up by the mutating webhook to exchange the Kubernetes token for an Azure AD token.
 
 ### Special care for init containers
 In some cases, your deployment may be using an init container. This is typically when you need some action to happen before your pod starts executing. For example, you may need to get a secret from a vault and keep it ready for your pod to use. 
