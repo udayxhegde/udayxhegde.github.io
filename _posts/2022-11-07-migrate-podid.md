@@ -25,6 +25,8 @@ To use workload identity in your AKS cluster, you need the following:
 - aks-preview extension at 0.5.102 or higher (use "az version" to check, to add or update use "az extension add/update --name aks-preview")
 - AKS cluster at 1.21 or higher. (use "az aks show -g <resource-group> -n <cluster-name>" to check the cluster version. Use "az aks upgrade --kubernetes-version <version-number>" to upgrade to version 1.21 or higher)
 
+Here's a reference to the [AKS documentation on workload identity.](https://learn.microsoft.com/en-us/azure/aks/workload-identity-overview)
+
 ### Step 2: Enable workload identity in your cluster
 This step will enable the Kubernetes feature to issue tokens to Kubernetes service accounts. 
 
@@ -216,9 +218,9 @@ The Azure Identity SDK is updated to use the environment variables set up by the
 -	Python: 1.7.0
 -	Go: not supported yet 
 
-The sidecar should only be used as a stopgap while you plan to update your workload with a more recent version of Azure Identity SDK.
+The sidecar should only be used as a stopgap while you plan to update the Azure Identity SDK in your deployment.
 
-This sidecar is optional and only needed if you are using an older version of the Azure Identity SDK. You can also choose to update the Azure Identity SDK version in your deployment instead of using the sidecar.
+This sidecar is optional and only needed if you are using an older version of the Azure Identity SDK. You can also choose to update the Azure Identity SDK in your deployment instead of using the sidecar.
 
 ### Step 6: Remove the pod identity binding
 At this point, we can safely remove the aadpodidbinding from the deployment yaml, and redeploy.
@@ -278,6 +280,9 @@ Since you will be calling DefaultAzureCredential({ManagedIdentityClientId = clie
 In some cases, your deployment may be using an init container. This is typically when you need some action to happen before your pod starts executing. For example, you may need to get a secret from a vault and keep it ready for your pod to use. 
 
 Since the init container runs before the sidecar is injected, token requests from the init container will not be able to use the sidecar model. It is necessary for the code running in the init container to exchange the Kubernetes token for an Azure AD token. The container has to either use the latest Azure Identity SDK or use the ClientAssertionCredential in the Microsoft Authentication Library (MSAL). See [here]({% post_url 2022-01-11-azuread-federate-k8s %}#ExchangeToken) for some examples.
+
+### Self-managed clusters
+This blog post focused on Azure Kubernetes Service. If you are using a self-managed cluster, most of the instructions in this blog post for upgrading your deployments will be the same. Use the [workload identity open source project](https://github.com/Azure/azure-workload-identity) to set up your cluster with workload identity. There is [detailed documentation](https://azure.github.io/azure-workload-identity/docs/) to help you with this.
 
 ## In conclusion
 Azure workload identity replaces pod identity that is deprecated. As you might have observed from this blog post, moving from Azure pod identity to Azure workload identity is seamless and straightforward. Since these features can run side-by-side, you can upgrade each deployment independently.

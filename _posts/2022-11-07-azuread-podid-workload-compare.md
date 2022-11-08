@@ -113,11 +113,15 @@ Kubernetes added Service Account Token Volume Projection (stable in v1.20), whic
 - It works consistently in any Kubernetes cluster: in Azure, in AWS, in GCP, or on-premises. It also works in any nodepools.
 - It works consistently for both Application identities and managed identities in Azure AD, without needing any secrets.
 
+Things to be aware of when you use workload identity:
+- There is a limit of 20 federated credentials on an Azure AD managed identity or application identity. Additional Azure AD identities can help when you run into this limit.
+- From the security perspective, you are making the Kubernetes cluster a token issuer and using the tokens to access Azure resources. Any compromise of the token signing keys will allow attackers to access all resources available to any pod in the cluster. So the token signing keys need to be stored securely and rotated regularly. Azure Kubernetes Service rotates these keys every three months. When using a self-managed cluster, you should plan for key hygiene and rotate these keys regularly. The API server stores the keys in the etcd store. So it is critical to ensure the security of the etcd store.
+
 Azure workload identity design ensures that developers can continue using DefaultAzureCredential in their code. This design uses an open-source admission webhook that can be added to any Kubernetes cluster. AKS adds this webhook when you enable workload identity. The webhook uses annotations on service accounts to simplify the configuration for acquiring tokens. The DefaultAzureCredential in the Azure Identity SDK detects these environment variables to facilitate the token acquisition from Azure AD. 
 
 Upgrading from pod-managed identity to workload identity is simple since these features can run side-by-side. [Read this blog post]({% post_url 2022-11-07-migrate-podid %}) for a step-by-step walkthrough of this upgrade.
 
-From the security perspective, you are making the Kubernetes cluster a token issuer and using the tokens to access Azure resources. The token signing keys need to be stored securely and rotated regularly. Azure Kubernetes Service rotates these keys every three months. If you are using a self-managed cluster, you need to plan for key hygiene and rotate these keys regularly.
+
 
 ## In conclusion
 Pod-managed identity enables the use of managed identities in Kubernetes clusters. However, it has several limitations that impact scale, performance, and developer experience. It also weakens the security posture with identities assigned to every cluster node. Azure workload identity leverages recent updates to Kubernetes to address these limitations. Plan to upgrade your workloads from pod-managed identity to workload identity. 
