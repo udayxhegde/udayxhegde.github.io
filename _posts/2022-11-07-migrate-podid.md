@@ -158,6 +158,13 @@ On success, this returns:
 }
 ```
 
+#### Permissions needed to create the federated credential on managed identities
+The permissions needed to create the federated credential on managed identities are:
+- "Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials/write"
+- "Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials/delete"
+
+The roles that have these permissions are owner and contributor. 
+
 ### Step 5: Update your deployment with the service account
 Configure your deployment to use the service account and the sidecar that acquires Azure AD token without needing any code changes.
 
@@ -288,6 +295,7 @@ Since the init container runs before the sidecar is injected, token requests fro
 This blog post focused on Azure Kubernetes Service. If you are using a self-managed cluster or a managed cluster from another cloud provider, you  can configure the Azure workload identity components on your own. Use the [workload identity open source project](https://github.com/Azure/azure-workload-identity) to set up your cluster with workload identity. There is [detailed documentation](https://azure.github.io/azure-workload-identity/docs/) to help you with this. 
 
 For self-managed clusters, you will also need to enable the OIDC federation on the cluster [using these instructions](https://azure.github.io/azure-workload-identity/docs/installation/self-managed-clusters.html). EKS and GKE clusters set up OIDC federation by default. Follow their instructions to get the issuer URL.
+
 
 ## In conclusion
 Azure workload identity replaces pod identity that is deprecated. As you might have observed from this blog post, moving from Azure pod identity to Azure workload identity is seamless and straightforward. Since these features can run side-by-side, you can upgrade each deployment independently.
