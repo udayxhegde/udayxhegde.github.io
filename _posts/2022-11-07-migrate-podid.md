@@ -91,7 +91,7 @@ kubectl.exe get AzureIdentity podid-blob -n app -o json | jq -r '.spec.clientID'
 ```
 This tells us that the client_id of my managed identity is bda293a8-529b-4007-ba2f-59ab5c5dc00a
 
-You also need the tenant-id. Assuming that you have set an active subscription with az cli, one way to get the tenant-id is:
+The tenant-id annotation is optional if your managed identity is in the same tenant as the AKS cluster. Assuming that you have set an active subscription with az cli, one way to get the tenant-id is:
 ```
 az account show | jq -r '(.tenantId)'
 ```
@@ -108,7 +108,9 @@ The admission webhook uses the annotations of client-id and tenant-id in the ser
         - name: AZURE_TENANT_ID
           value: 72f988bf-86f1-41af-91ab-2d7cd011db55
         - name: AZURE_FEDERATED_TOKEN_FILE
-          value: /var/run/secrets/tokens/azure-identity-token
+          value: /var/run/secrets/azure/tokens/azure-identity-token
+        - name: AZURE_AUTHORITY_HOST
+          value: https://login.microsoftonline.com/
         volumeMounts: 
         - mountPath: /var/run/secrets/tokens
             name: azure-identity-token
@@ -269,6 +271,7 @@ metadata:
 
   annotations:
     # no client-id annotation, since we are dealing with multiple identities
+    # tenant-id annotation is optional when you use AKS and the managed identity is in the same tenant as AKS
     azure.workload.identity/tenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
   labels:
     azure.workload.identity/use: "true"
@@ -281,8 +284,10 @@ In some cases, your deployment may be using an init container. This is typically
 
 Since the init container runs before the sidecar is injected, token requests from the init container will not be able to use the sidecar model. It is necessary for the code running in the init container to exchange the Kubernetes token for an Azure AD token. The container has to either use the latest Azure Identity SDK or use the ClientAssertionCredential in the Microsoft Authentication Library (MSAL). See [here]({% post_url 2022-01-11-azuread-federate-k8s %}#ExchangeToken) for some examples.
 
-### Self-managed clusters
-This blog post focused on Azure Kubernetes Service. If you are using a self-managed cluster, most of the instructions in this blog post for upgrading your deployments will be the same. Use the [workload identity open source project](https://github.com/Azure/azure-workload-identity) to set up your cluster with workload identity. There is [detailed documentation](https://azure.github.io/azure-workload-identity/docs/) to help you with this.
+### Clusters other than Azure Kubernetes Service
+This blog post focused on Azure Kubernetes Service. If you are using a self-managed cluster or a managed cluster from another cloud provider, you  can configure the Azure workload identity components on your own. Use the [workload identity open source project](https://github.com/Azure/azure-workload-identity) to set up your cluster with workload identity. There is [detailed documentation](https://azure.github.io/azure-workload-identity/docs/) to help you with this. 
+
+For self-managed clusters, you will also need to enable the OIDC federation on the cluster [using these instructions](https://azure.github.io/azure-workload-identity/docs/installation/self-managed-clusters.html). EKS and GKE clusters set up OIDC federation by default. Follow their instructions to get the issuer URL.
 
 ## In conclusion
 Azure workload identity replaces pod identity that is deprecated. As you might have observed from this blog post, moving from Azure pod identity to Azure workload identity is seamless and straightforward. Since these features can run side-by-side, you can upgrade each deployment independently.
