@@ -296,7 +296,7 @@ This blog post focused on Azure Kubernetes Service.
 
 If you are using pod identity in a self-managed cluster, you will need to enable OIDC federation on your cluster and add the workload identity components. Follow this [detailed documentation](https://azure.github.io/azure-workload-identity/docs/) for using the [workload identity open-source project](https://github.com/Azure/azure-workload-identity) in your cluster. Once you have configured your self-managed cluster to be an OIDC issuer and configured it with workload identity, you can use all the steps in this blog post to upgrade each deployment.
 
-Clusters running outside Azure, including managed clusters such as EKS and GKE, can use Azure workload identity. [See the documentation](https://azure.github.io/azure-workload-identity/docs/) on the open-source project for more details.
+Clusters running outside Azure, including managed clusters such as EKS and GKE, can use Azure workload identity. [See the documentation](https://azure.github.io/azure-workload-identity/docs/) on the open-source project for more details. Multi-cloud is becoming the norm in several customer environments. Azure workload identity allows a consistent pattern no matter where the Kubernetes cluster is running.  
 
 ## In conclusion
 Azure workload identity replaces pod identity that is deprecated. As you might have observed from this blog post, moving from Azure pod identity to Azure workload identity is straightforward. Since these features can run side-by-side, you can upgrade each deployment independently.
