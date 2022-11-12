@@ -112,7 +112,7 @@ The admission webhook uses the annotations of client-id and tenant-id in the ser
         - name: AZURE_AUTHORITY_HOST
           value: https://login.microsoftonline.com/
         volumeMounts: 
-        - mountPath: /var/run/secrets/tokens
+        - mountPath: /var/run/secrets/azure/tokens
             name: azure-identity-token
             readonly: true
       volumes:
