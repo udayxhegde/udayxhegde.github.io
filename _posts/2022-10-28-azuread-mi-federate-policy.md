@@ -13,7 +13,7 @@ In my [recent blog post]({% post_url 2022-10-03-azuread-federate-mi %}) we discu
 
  We will consider two scenarios in this blog post. Only allow federation on managed identities to an approved list of issuers and only allow federation with Azure Kubernetes Service (AKS) clusters in approved tenants.
 
-# A quick primer: what is Azure policy?
+## A quick primer: what is Azure policy?
  Azure policy is a service in Azure that allows you to define policies on Azure resources. It enables you to enforce business rules as well as check if resources are compliant with these rules. These rules apply to scopes, such as management groups, subscriptions, resource groups, or individual resources. 
 
 If you want to author policy definitions that apply to all azure resources in your tenant, you can assign those definitions to the root management group. This group includes all management groups and all subscriptions in the tenant.
