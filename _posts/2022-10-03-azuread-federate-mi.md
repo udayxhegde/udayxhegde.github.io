@@ -13,7 +13,7 @@ Yes! Workload Identity Federation is now available in public preview on user-ass
 
 ![Kubernetes AAD federation](/images/mi-federate/managed-id-blog.jpg)
 
-# Quick primer: what are managed identities and why should you care about this new capability
+## Quick primer: what are managed identities and why should you care about this new capability
 In Azure AD, there are two kinds of workload identities. Application identities and Managed Identities.
 Application Identities have several powerful features such as multi-tenancy and user sign-in. These capabilities cause application identities to be closely guarded by administrators. In many companies, developers don't have the permissions to create application identities or modify them. It is challenging for developers to use workload identity federation on application identities since they have to open a ticket and convince their admins to update application identities.
 
@@ -23,10 +23,10 @@ Now that workload identity federation is supported on managed identities, you ca
 
 Note: Managed Identities come in two kinds: system-assigned and user-assigned. The lifecycle of system-assigned managed identity is tied to an Azure compute resource like VM, so it does not make sense to allow adding a workload identity federation on those identities. Workload identity federation is supported only on user-assigned managed identities.
 
-# Configuring managed identities with workload identity federation
+## Configuring managed identities with workload identity federation
 First, you need to be able to create a user-assigned managed identity. You can achieve this if you have an Azure subscription and are in the "Managed Identity Contributor" role. You can then assign that identity with the necessary access to resources you own or manage, such as Azure storage.
 
-# Adding a federated credential using Azure CLI
+## Adding a federated credential using Azure CLI
 
 You will need az cli version 2.40.0 or higher. And aks-preview extension 0.5.102 or later. You can check both of these using az version.
 ```

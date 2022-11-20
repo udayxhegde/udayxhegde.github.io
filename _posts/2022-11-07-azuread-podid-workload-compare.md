@@ -13,7 +13,7 @@ Managed identities in Azure allow software workloads to access Azure resources w
 
 ![Title image](/images/podid/pod-compare.jpg)
 
-# What is Azure AD pod-managed identity in AKS?
+## What is Azure AD pod-managed identity in AKS?
 Pod-managed identity uses the [open-source pod identity project0](https://github.com/Azure/aad-pod-identity) that supports using managed identities in Kubernetes clusters. [See the AKS documentation](https://learn.microsoft.com/en-us/azure/aks/use-azure-ad-pod-identity) on how to register the feature and enable it.
 
 The design of pod-managed identity requires the managed identities to be available on all the nodes in the Kubernetes clusters. Pod-managed identity intercepts all token requests to ensure that pods can get tokens only for the managed identities authorized for their use.  Three Custom Resource Definitions (CRDs) are added to the cluster when this feature is enabled. 
@@ -106,7 +106,7 @@ While pod-managed identity in AKS provides powerful capabilities to assign ident
 - It is only available on Linux nodepools, and not available on Windows.
 
 
-# How is Azure workload identity for Kubernetes different?
+## How is Azure workload identity for Kubernetes different?
 Kubernetes added Service Account Token Volume Projection (stable in v1.20), which allows Kubernetes to issue tokens to service accounts at a file path. Using these tokens, you can federate with an external identity provider such as Azure Active Directory to access cloud resources. My earlier blog posts on [Application identities]({% post_url 2022-01-11-azuread-federate-k8s %}) and [Managed identities]({% post_url 2022-10-03-azuread-federate-mi %}) provide details on how this pattern works. Azure workload identity for Kubernetes uses workload identity federation to overcome the limitations of pod-managed identity.
 - Since cluster nodes don't need to be assigned identities, it avoids scale and performance issues. Not having the identities on cluster nodes also improves the overall security posture.
 - Developers can use native Kubernetes constructs and not depend on the cluster admin to provision identities for their software workloads.
