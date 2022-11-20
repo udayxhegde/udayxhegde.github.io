@@ -13,7 +13,7 @@ Enterprises are increasingly using cloud-native technologies to build software w
 
 ![Kubernetes AAD federation](/images/k8s-federate/k8sfederate_img.png)
 
-# Using Azure AD workload identity federation with Kubernetes
+## Using Azure AD workload identity federation with Kubernetes
 The basic pattern is similar to what we saw in the earlier blog posts for GitHub and Google Cloud. Tokens issued by providers such as GitHub or Google are exchanged for  Azure AD access tokens. 
 
 There are four parts to get this working end-to-end in a Kubernetes cluster:
@@ -28,9 +28,9 @@ Microsoft announced a new [open-source project](https://azure.github.io/azure-wo
 
 Let's walk through this flow end-to-end using a managed cluster in Azure. Later in the blog, we will look at more details such as things to consider for your self-managed cluster.  
 
-## End-to-end walk-through to demonstrate this
+### End-to-end walk-through to demonstrate this
 
-### <a name="AKS-OIDC"></a> Part 1: Publish an OIDC discovery endpoint for your Azure Kubernetes Service (AKS) cluster
+#### <a name="AKS-OIDC"></a> Part 1: Publish an OIDC discovery endpoint for your Azure Kubernetes Service (AKS) cluster
 
 Since this is a new preview capability in AKS, there are several steps involved here:
 - Explicitly opt-in by turning on the EnableOIDCIssuer feature flag on your Azure subscription
@@ -67,7 +67,7 @@ You will notice this section showing where AKS has published the OIDC discovery 
   }
 ```
 
-#### Enable the mutating admission webhook to simplify config for your deployments
+##### Enable the mutating admission webhook to simplify config for your deployments
 The second part of preparing the cluster is to install a mutating admission webhook. The webhook simplifies the configuration for your developers.
 
 ```
@@ -91,7 +91,7 @@ NAME                               TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(
 azure-wi-webhook-webhook-service   ClusterIP   10.0.42.255   <none>        443/TCP   10d
 ```
 
-### Part 2: Developers setup their deployment with a Kubernetes service account
+#### Part 2: Developers setup their deployment with a Kubernetes service account
 Use a service account in your Kubernetes deployment. Annotate the service account with the identity of the Azure AD application you want to use. This mutating webhook will use the annotation to automate several configurations in your deployment. 
 ```
 apiVersion: v1
@@ -111,7 +111,7 @@ metadata:
 ```
 
 
-### Part 3: Configure an Azure AD application to trust tokens issued to that service account.
+#### Part 3: Configure an Azure AD application to trust tokens issued to that service account.
 For this step, you need a couple of things.
 1. The issuer URL for your Kubernetes cluster. 
 ```
@@ -127,7 +127,7 @@ So for the sample service account above, the subject name will be system:service
 
 There are several ways to configure the Azure AD application with a "Federated Identity Credential" using this information:
 
-#### <a name="AADPORTALFIC">Using the Azure AD portal
+##### <a name="AADPORTALFIC">Using the Azure AD portal
 
 The Azure AD portal has added preview features to simplify this configuration. Visit the Azure AD portal, and pick your application under "App registrations". Go to "Certificated & secrets" and pick "Federated Credentials". Select "Add credential". 
 ![Azure AD App credential](/images/k8s-federate/k8s_start.jpg)
@@ -137,7 +137,7 @@ In the "Federated credential scenario", pick "Kubernetes accessing Azure resourc
 Populate the cluster issuer URL, the namespace and service account for your deployment. Azure AD will populate the subject name with the format used by Kubernetes.
 ![Azure AD K8s credential](/images/k8s-federate/k8s_done.jpg)
 
-#### other ways to achieve this
+##### other ways to achieve this
 You can also use the Azure CLI or do this programmatically. See [this blog post]({% post_url 2021-11-11-azuread-federate-gcp %}#AzureADTrust) for details.
 
 <a name="ExchangeToken"></a>
@@ -156,7 +156,7 @@ const blobClient = new BlobServiceClient(`https://${account}.blob.core.windows.n
                                           credential );
 ```
 
-#### Using Microsoft Authentication Library (MSAL)
+##### Using Microsoft Authentication Library (MSAL)
 Alternately, you can use MSAL and write code similar to what we saw in the blog for Google Cloud. In the case of Kubernetes, the token is available at a file location configured by the mutating admission webhook. The value of this file location is available in the AZURE_FEDERATED_TOKEN_FILE environment variable.
 
 ```javascript
@@ -311,7 +311,7 @@ The Microsoft Authentication Library (MSAL) supports using the Kubernetes token 
 The Azure Identity SDK has updated the DefaultAzureCredential to support this pattern.  Under the covers, DefaultAzureCredential will look for the bread crumbs left behind by the mutating webhook. If it finds the AZURE_FEDERATED_TOKEN_FILE, AZURE_CLIENT_ID, and AZURE_TENANT_ID environment set, it uses those values to get an Azure AD token.
 
 
-### In conclusion
+## In conclusion
 Azure AD workload identity federation is a new capability that allows you to get rid of secrets in several scenarios such as Kubernetes, services running in Google Cloud, and GitHub Actions workflow. Stay tuned for many more scenarios where you can use this capability to get rid of secrets.
 
 If you have any comments, feedback, or suggestions on this topic, I would love to hear from you. [DM me on Twitter](https://twitter.com/messages/compose?recipient_id=1446741344)
