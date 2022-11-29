@@ -14,7 +14,7 @@ Managed identities in Azure allow software workloads to access Azure resources w
 ![Title image](/images/podid/pod-compare.jpg)
 
 ## What is Azure AD pod-managed identity in AKS?
-Pod-managed identity uses the [open-source pod identity project0](https://github.com/Azure/aad-pod-identity) that supports using managed identities in Kubernetes clusters. [See the AKS documentation](https://learn.microsoft.com/en-us/azure/aks/use-azure-ad-pod-identity) on how to register the feature and enable it.
+Pod-managed identity uses the [open-source pod identity project](https://github.com/Azure/aad-pod-identity) that supports using managed identities in Kubernetes clusters. [See the AKS documentation](https://learn.microsoft.com/en-us/azure/aks/use-azure-ad-pod-identity) on how to register the feature and enable it.
 
 The design of pod-managed identity requires the managed identities to be available on all the nodes in the Kubernetes clusters. Pod-managed identity intercepts all token requests to ensure that pods can get tokens only for the managed identities authorized for their use.  Three Custom Resource Definitions (CRDs) are added to the cluster when this feature is enabled. 
 - AzureIdentity CRD allows you to represent your managed identity in a namespace in your Kubernetes clusters. 
@@ -34,7 +34,7 @@ Now let's walk through how this works step-by-step.
 
 Enabling pod identity in the cluster results in three CRDS to be configured in the cluster and the NMI pods to be deployed on every cluster node. To enable pod identity, a cluster admin has to run “az aks update –enable-pod-identity.” 
 
-![nmi pods](/images/podid/podk8s-1.jpg)
+![nmi pods](/images/podid/podid-1.png)
 
 ### Step 2: Developers assign an identity to a pod.  
 For the developers to assign an identity to a pod, they need an AzureIdentityBinding selector. So the cluster admin first needs to add the AzureIdentity and AzureIdentityBinding resources.  Adding the AzureIdentity resource causes the matching managed identity to be assigned to the cluster nodes. This assignment requires the cluster identity to be in the Managed Identity Operator role on the managed identity. So usually, this step involves the following:
@@ -49,7 +49,7 @@ az aks pod-identity add -g podworkloadcompare --cluster-name k8spodid --namespac
 ```
 This will result in an AzureIdentity resource called podid-blob and a AzureIdentityBinding resource with a podid-blob selector.
 
-![identity assignment](/images/podid/podk8s-2.jpg)
+![identity assignment](/images/podid/podid-2.png)
 
 -  The developer then deploys a pod in the namespace using the binding in the deployment spec.
 
@@ -78,7 +78,7 @@ spec:
 
 Here's a view of showing the NMI allowing or disallowing token requests based on the binding used by the pods. 
 
-![identity usage](/images/podid/podk8s-3.jpg)
+![identity usage](/images/podid/podid-3.png)
 
 Since each deployment is limited to using a single aadpodidbinding, pods needing to use more than one managed identity need a selector that matches all those identities.
 For example:
@@ -107,11 +107,17 @@ While pod-managed identity in AKS provides powerful capabilities to assign ident
 
 
 ## How is Azure workload identity for Kubernetes different?
-Kubernetes added Service Account Token Volume Projection (stable in v1.20), which allows Kubernetes to issue tokens to service accounts at a file path. Using these tokens, you can federate with an external identity provider such as Azure Active Directory to access cloud resources. My earlier blog posts on [Application identities]({% post_url 2022-01-11-azuread-federate-k8s %}) and [Managed identities]({% post_url 2022-10-03-azuread-federate-mi %}) provide details on how this pattern works. Azure workload identity for Kubernetes uses workload identity federation to overcome the limitations of pod-managed identity.
+Kubernetes added Service Account Token Volume Projection (stable in v1.20), which allows Kubernetes to issue tokens to service accounts at a file path. Using these tokens, you can federate with an external identity provider such as Azure Active Directory to access cloud resources. 
+
+![workload identity federation](/images/podid/workload-federation.png)
+
+My earlier blog posts on [Application identities]({% post_url 2022-01-11-azuread-federate-k8s %}) and [Managed identities]({% post_url 2022-10-03-azuread-federate-mi %}) provide details on how this pattern works. Azure workload identity for Kubernetes uses workload identity federation to overcome the limitations of pod-managed identity.
 - Since cluster nodes don't need to be assigned identities, it avoids scale and performance issues. Not having the identities on cluster nodes also improves the overall security posture.
 - Developers can use native Kubernetes constructs and not depend on the cluster admin to provision identities for their software workloads.
 - It works consistently in any Kubernetes cluster: in Azure, in AWS, in GCP, or on-premises. This consistency is essential as multi-cloud is becoming the norm in several customer environments. It also works in any nodepools, Linux or Windows.
 - It works consistently for Azure AD application identities and managed identities, without needing any secrets.
+
+
 
 Things to be aware of when you use workload identity:
 - There is a limit of 20 federated credentials on an Azure AD managed identity or application identity. Additional Azure AD identities can help when you run into this limit.
