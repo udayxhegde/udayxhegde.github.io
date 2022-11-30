@@ -15,7 +15,7 @@ With the workload identity federation, we tackled a specific scenario. It allows
 
 By the way, I am visiting KubeCon in Valencia a few weeks from now. If you are attending the conference, and have any input on this topic, let's meet and chat! And if you are not going to KubeCon, let's connect virtually on this topic. [Connect with me on Twitter](https://twitter.com/messages/compose?recipient_id=1446741344)
 
-# Identity needs for service-to-service communication
+## Identity needs for service-to-service communication
 There appear to be three primary requirements that most developers care about: 
 1. Mutually authenticate the interacting services. When Service A is communicating with Service B, it can verify it is indeed talking to service B and, vice versa, service B knows the communication is coming from service A. Why is this important? In the most common internet scenarios that we interact with every day, the HTTPS protocol ensures we talk to the intended website whose name we provide to the browser. While the server does not know the identity of the client, usually the browser, it has the means to authenticate the user interacting with the browser. When you sign-in, both sides of the communication are authenticated. The service-to-service communication needs a similar mechanism to authenticate the services to each other, even when there's no HTTPS or any user involved.
 

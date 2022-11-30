@@ -30,7 +30,7 @@ permalink: /:title/
 
 minima:
   social_links: 
- #   - { platform: github, user_url: "https://github.com/udayxhegde"}
+    - { platform: github, user_url: "https://github.com/udayxhegde"}
     - { platform: twitter, user_url: "https://twitter.com/udayxhegde"}
     - { platform: linkedin, user_url: "https://www.linkedin.com/in/udayhegde/"}
  #   - { platform: stackoverflow, user_url: "https://stackoverflow.com/users/13918262/udayxhegde"}

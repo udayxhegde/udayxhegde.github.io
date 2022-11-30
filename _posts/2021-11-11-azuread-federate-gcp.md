@@ -11,11 +11,13 @@ author: uday
 ---
 When applications or services run in environments outside Azure, they need Azure AD application secrets to authenticate to Azure AD and access resources such as Azure and Microsoft Graph. These secrets pose a security risk if they are not stored securely and rotated regularly. Azure AD workload identity federation removes the need for these secrets in selected scenarios. Developers can configure their Azure AD applications to trust tokens issued by another identity provider. This blog post explores how you can access Azure resources without needing secrets when your services are running in the Google Cloud Platform.
 
-![Google AAD federation](/images/gcp-aad-federate/gcp-aad-img.png)
+![Google to Azure using workload identity federation](/images/gcp-aad-federate/gcp-aad-title.png)
 
 
 ## Using Azure AD workload identity federation with Google Cloud
 An [earlier blog post]({% post_url 2021-10-27-azuread-federate-github-actions %}) discussed several aspects of Azure AD workload identity federation. In the GitHub Actions scenario, the AzureLogin action handled all the logic of getting a GitHub token and exchanging it for an Azure AD token. When your service is running in a cloud platform such as Google Cloud, you need to code a similar logic in your service.
+
+![Google AAD federation](/images/gcp-aad-federate/gcp-aad-img.png)
 
 First, let's look at how developers access Azure resources from their services running in Google Cloud today. They first create an application registration in Azure AD and give it the necessary permissions in Azure. Then they configure the application with a secret and use that secret in their service in Google to request an access token for that application from Azure AD.
 
@@ -46,49 +48,32 @@ The most important parts of the federated identity credential are the following:
 - issuer: this should match the "iss" claim in the token issued by the identity provider. This needs to be an URL that must comply with the OIDC Discovery Spec. Azure AD will use this issuer URL to fetch the keys that are necessary to validate the token. In the case of Google cloud, the issuer is  "https://accounts.google.com"
 - audience: this should match the "aud" claim in the token. For security reasons, you should pick a value that is unique for tokens meant for Azure AD. The Microsoft recommended value is "api://AzureADTokenExchange".
 
-The Microsoft Graph beta endpoint (https://graph.microsoft.com/beta) exposes REST APIs to create, update, delete federatedIdentityCredentials on applications. 
 
-Here are a few options for configuring a federated identity credential on an Azure AD application.
-#### Using Azure CLI
-The Azure CLI does not natively support federated identity credentials yet. If the Azure CLI is your preferred tool, you can use its rest interface to call the Microsoft Graph APIs directly. I recommend you do this in the Azure Cloud Shell. Your mileage will vary if you run it in any other command-line tools. $appObj in the example below is the object id of your Azure AD application.
+#### Permissions needed to create federated credential on an application identity
+To create federated credentials on an application, you either need one of these roles:
+- [Application Administrator](https://learn.microsoft.com/en-us/azure/active-directory/roles/permissions-reference#application-administrator)
+- [Application Developer](https://learn.microsoft.com/en-us/azure/active-directory/roles/permissions-reference#application-developer)
+- [Cloud Application Administrator](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#cloud-application-administrator)
+- [Application Owner](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#application-owner)
+
+Or this permission:
+- [`microsoft.directory/applications/credentials/update`](https://learn.microsoft.com/en-us/azure/active-directory/roles/custom-available-permissions#microsoftdirectoryapplicationscredentialsupdate)
+
+#### Configuring a federated credential on an application using Azure CLI
+Create a JSON file called credential.json.
 ```
-az rest --method POST --uri 'https://graph.microsoft.com/beta/applications/'$appObj'/federatedIdentityCredentials'  --body '{"name":"<aUniqueNameWithinYourApp>","issuer":"<your issuer>","subject":"<your subject>","audiences":["api://AzureADTokenExchange"]}'
+{ "name": "AccessFromGoogle", 
+  "issuer": "https://accounts.google.com", 
+  "subject": <Unique ID of the service account in Google",
+  "audiences": ["api://AzureADTokenExchange"], 
+  "description": "This is meant for workloads in project X" 
+}
 ```
+Then create a federated identity credential on the Azure AD application
 
-#### Using the Microsoft Graph SDKs.
-You can also use the Microsoft Graph SDKs, available in several languages, to view or modify a federated identity credential. You can choose either the delegated flow or the application-only flow: just make sure the service principal you use for this purpose has been consented with the Application.ReadWrite.All permissions.
-
-The federatedIdentityCredentials are currently in beta (https://graph.microsoft.com/beta/applications/"object-id-of-app"/federatedIdentityCredentials). The following SDKs have support for the beta endpoint. 
-
-- .Net [https://github.com/microsoftgraph/msgraph-beta-sdk-dotnet](https://github.com/microsoftgraph/msgraph-beta-sdk-dotnet)
-- Javascript, [https://github.com/microsoftgraph/msgraph-sdk-javascript](https://github.com/microsoftgraph/msgraph-sdk-javascript)
-- Java, [https://github.com/microsoftgraph/msgraph-beta-sdk-java](https://github.com/microsoftgraph/msgraph-beta-sdk-java)
-- PHP [https://github.com/microsoftgraph/msgraph-beta-sdk-php](https://github.com/microsoftgraph/msgraph-beta-sdk-php)
-- Go [https://github.com/microsoftgraph/msgraph-beta-sdk-go](https://github.com/microsoftgraph/msgraph-beta-sdk-go)
-
-
-(Note that Javascript does not have a separate beta SDK. You can specify the api-version when you initialize the graph client, as follows)
-```javascript
-import {Client} from "@microsoft/microsoft-graph-client";
-
-// pick one of the several auth provider options
-
-const graphClient = Client.initWithMiddleware({ 
-        defaultVersion: 'beta',
-        authProvider
-});
-
-// idName, issuer, subject are variables set with the necessary values
-const newCredential = {
-    name : idName,
-    issuer : issuer,
-    subject: subject,
-    audience : "api://AzureADTokenExchange"
-};
-
-return graphClient.api(`/applications/${appId}/federatedIdentityCredentials/`).post(newCredential); 
 ```
-
+az ad app federated-credential create --id <appid> --parameters credential.json
+```
 
 ### Part 3: Getting a Google token and exchanging it for an Azure AD token
 Now that we have configured the Azure AD application to trust the Google service account, we are ready to get a token from Google and exchange it for an Azure AD access token,
@@ -106,65 +91,80 @@ You are requesting Google for a token to identify your service account (an ID to
 
 
 #### exchanging the identity token for an Azure AD access token
-Now that you have an identity token from Google, we can exchange this for an Azure AD access token. The Microsoft Authentication Library (MSAL) has been updated to allow you to pass the Google token as a "clientAssertion".  Using this support in MSAL, you can write your  token class that implements the "TokenCredential" interface, which can then be used in the different Azure SDKs. The following MSAL versions have support for clientAssertions:
-- [MSAL Go (Preview)](https://github.com/AzureAD/microsoft-authentication-library-for-go)
-- [MSAL Node](https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-node)
-- [MSAL .Net](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet)
-- [MSAL Python](https://github.com/AzureAD/microsoft-authentication-library-for-python)
-- [MSAL Java](https://github.com/AzureAD/microsoft-authentication-library-for-java)  
 
-Here's a sample code snippet to demonstrate this, extracted from [my GitHub repo](https://github.com/udayxhegde/aad-federate-keyvault-node)
+***This section has been updated in November 2022***
+
+The Azure Identity SDK has added support for a new credential called ClientAssertionCredential. This credential accepts a callback function to get a federated token. I like using this credential since it simplifies the developer experience.
+
+Here’s a sample code snippet to demonstrate this. You can see a more detailed sample in [my GitHub repo](https://github.com/udayxhegde/aad-federate-blobstore-node)
+
 ```javascript
-const msal = require("@azure/msal-node");
-import {TokenCredential, GetTokenOptions, AccessToken} from "@azure/core-auth"
+import { ClientAssertionCredential } from "@azure/identity";
 
-class ClientAssertionCredential implements TokenCredential {
+// pass the googleIDToken function we defined above to ClientAssertionCredential
+// It gets called whenever ClientAssertionCredential needs a new federated token from Google
+tokenCredential = new ClientAssertionCredential( tenantID,
+                                                 clientID,
+                                                 googleIDToken ); 
 
-    constructor(...) {
-        //constructor stuff. Store clientID, aadAuthority, tenantID for later use
-    }
-    
-    async getToken(scope: string | string[], _options?: GetTokenOptions):Promise<AccessToken> {
-
-        var scopes:string[] = [];           
-        // write code here to update the scopes array, based on scope paramenter
-
-
-        return googleIDToken() // calling this directly just for clarity, 
-                               // this should be a callback
-        .then((clientAssertion:any)=> {
-            let msalApp = new msal.ConfidentialClientApplication({
-                auth: {
-                    clientId: this.clientID,
-                    authority: this.aadAuthority + this.tenantID,
-                    clientAssertion: clientAssertion,
-                }
-            });
-            return msalApp.acquireTokenByClientCredential({ scopes })
-        })
-        .then(function(aadToken) {
-            // return  in form expected by TokenCredential.getToken
-            return({ 
-                token: aadToken.accessToken,
-                expiresOnTimestamp: aadToken.expiresOn.getTime()
-            });
-        })
-        .catch(function(error) {
-            // error stuff
-        });
-    }
-}
 ```
-Here's an example of how you can use this in an Azure SDK such as storage-blob
+
+Once you have the tokenCredential, you can use this in an Azure SDK such as storage-blob.
+
 ```javascript
 const { BlobServiceClient } = require("@azure/storage-blob");
 
-const tokenCredential =  new ClientAssertionCredential(...);
-                                             
 const blobClient = new BlobServiceClient(blobUrl, tokenCredential);
-
 ```
-When you make requests to the blobClient to access storage, the blobClient calls the getToken method on the ClientAssertionCredential. This results in a request for a fresh ID token from the metatdata server which then gets exchanged for an Azure AD access token.
+
+When requests are made to the blobClient to access storage, the blobClient calls the getToken method on the ClientAssertionCredential. This call results in a request for a fresh token from Google, which then gets exchanged for an Azure AD access token. The ClientAssertionCredential takes care of caching tokens, so tokens are requested from Google or Azure AD only when necessary.
+
+This ClientAssertionCredential is available in the latest shipping Azure Identity SDKs. It was introduced in these versions:
+
+-	.NET: [1.6.0](https://github.com/Azure/azure-sdk-for-net/blob/main/sdk/identity/Azure.Identity/CHANGELOG.md#160-2022-04-05)
+-	Java: [1.5.0](https://github.com/Azure/azure-sdk-for-java/blob/main/sdk/identity/azure-identity/CHANGELOG.md#150-2022-04-05)
+-	JavaScript: [2.1.0](https://github.com/Azure/azure-sdk-for-js/blob/main/sdk/identity/identity/CHANGELOG.md#210-2022-07-08)
+-	Python: [1.9.0](https://github.com/Azure/azure-sdk-for-python/blob/main/sdk/identity/azure-identity/CHANGELOG.md#190-2022-04-05)
+-	Go: [1.2.0](https://github.com/Azure/azure-sdk-for-go/blob/main/sdk/azidentity/CHANGELOG.md#120-2022-11-08)
+
+Now that we have completed the end-to-end walkthrough, let's look at some additional details.
+
+## Additional details
+
+### Using MSAL instead of AzureIdentity for getting tokens.
+If your preferred SDK is Microsoft Authentication Library (MSAL), that SDK is available in the following languages and supports exchanging tokens. 
+- [MSAL .Net](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet)
+- [MSAL Java](https://github.com/AzureAD/microsoft-authentication-library-for-java)  
+- [MSAL Node](https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-node)
+- [MSAL Python](https://github.com/AzureAD/microsoft-authentication-library-for-python)
+- [MSAL Go (Preview)](https://github.com/AzureAD/microsoft-authentication-library-for-go)
+
+[My GitHub repo](https://github.com/udayxhegde/aad-federate-blobstore-node) also has a sample using MSAL to exchange a Google token for an Azure AD token.
+
+
+### Using an Azure managed identity instead of Azure AD application
+***As of October 2022, you can also add federated credentials on a managed identity***
+
+Azure AD has two kinds of workload identities: applications and managed identities. In the walkthrough so far, we considered an application identity. You can also choose to use a managed identity instead of an application identity.
+You can configure a federated credential on a managed identity using Azure portal, Azure CLI, or Azure ARM templates.
+
+To create the federated credential on a managed identity, you need to have the role of either owner or contributor of the managed identity. 
+
+#### Configuring a federated credential on a managed identity using Azure CLI
+```
+az identity federated-credential create --name AccessFromGoogle --identity-name workload-federate-MI1 --resource-group codesamples-rg --issuer https://accounts.google.com --subject <Unique ID for Google service account> --audience api://AzureADTokenExchange
+```
+
+### Configuring federated credentials programmatically
+You can also configure the federated credentials programmatically on both applications and managed identities.
+
+#### Using the Microsoft Graph SDKs for Azure AD application identity
+You can use the Microsoft Graph SDKs, available in several languages, to view or modify a federated identity credential. You can choose either the delegated flow or the application-only flow: make sure the service principal you use for this purpose has consent for the Application.ReadWrite.All permissions.
+
+The federatedIdentityCredentials are currently in beta (https://graph.microsoft.com/v1.0/applications/"object-id-of-app"/federatedIdentityCredentials). [The Graph SDK is available in several languages](https://learn.microsoft.com/en-us/graph/sdks/sdks-overview).
+
+#### Using ARM templates for Azure managed identity
+You can use [ARM templates, Bicep, or Terraform](https://learn.microsoft.com/en-us/azure/templates/microsoft.managedidentity/userassignedidentities/federatedidentitycredentials?pivots=deployment-language-arm-template) to configure federated identity credentials on a managed identity. 
 
 ### In conclusion
 Azure AD workload identity federation is a new capability that allows you to get rid of secrets in several scenarios such as GitHub Actions workflow and services running in Google Cloud. Stay tuned for many more scenarios where this capability can be used to get rid of secrets.

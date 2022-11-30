@@ -11,7 +11,7 @@ author: uday
 ---
 When developers build services that need to access other resources, they have to figure out how to manage the credentials for this access. When these services are running in Azure, developers can use managed identities in Azure to avoid dealing with credentials on their own. This "secret-less" model can be used even when these services need to access Amazon Web Services (AWS) resources. This lets you avoid having to store and manage AWS credentials in Azure. This blog post provides a walkthrough of how you can achieve this.
 
-![Access AWS from Azure](/images/aad_aws_federate/awsazure_img.jpg)
+![Access AWS from Azure](/images/aad_aws_federate/aad-aws-title.png)
 
 ## First, the concepts we will use to set this up
 
