@@ -11,7 +11,7 @@ author: uday
 ---
 Pod identity is an open-source project that enables using Azure managed identities in Kubernetes clusters. Pod-managed identity, a public preview feature in Azure Kubernetes Service (AKS), is built upon the pod identity project. Pod identity is now deprecated and not recommended for use in your Kubernetes clusters. Azure workload identity, which is simpler to use and overcomes several limitations, replaces pod identity. Azure workload identity can be used side-by-side with pod identity, making it easy to upgrade your deployments. This blog article walks you through how you can seamlessly and gradually move each of your Kubernetes deployments from pod identity to workload identity.
 
-![Title image](/images/workloadid/workload-upgrade.jpg)
+![Title image](/images/workloadid/k8s-aad-title.png)
 
 For details on pod-managed identity in AKS, including a comparison with workload identity, [see this blog post.]({% post_url 2022-11-07-azuread-podid-workload-compare %})
 

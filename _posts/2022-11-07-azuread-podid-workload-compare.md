@@ -11,7 +11,7 @@ author: uday
 ---
 Managed identities in Azure allow software workloads to access Azure resources without needing secrets. However, these identities can only be used in workloads on Azure compute like VMs, App Services, and Functions. Azure AD pod-managed identity is a public preview feature in Azure Kubernetes Service (AKS) that enables workloads in Kubernetes clusters to use managed identities. This feature is now deprecated. Azure workload identity for Kubernetes replaces pod-managed identity. Azure workload identity also addresses several limitations that exist in pod-managed identity. This blog post walks through a comparison between pod identity and workload identity.
 
-![Title image](/images/podid/pod-compare.jpg)
+![Title image](/images/podid/pod-workload-title.png)
 
 ## What is Azure AD pod-managed identity in AKS?
 Pod-managed identity uses the [open-source pod identity project](https://github.com/Azure/aad-pod-identity) that supports using managed identities in Kubernetes clusters. [See the AKS documentation](https://learn.microsoft.com/en-us/azure/aks/use-azure-ad-pod-identity) on how to register the feature and enable it.
