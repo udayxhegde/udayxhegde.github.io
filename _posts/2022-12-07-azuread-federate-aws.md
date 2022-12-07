@@ -79,7 +79,7 @@ Since this is the first time the identity pool sees a request for wlid_1, it cre
 
 
 You may wonder how you will keep track of an additional set of these developer identities for your workloads. A simpler alternative is to use the client_id of the Azure AD workload identity you will use for this federation. Let's use that approach in this walkthrough. Let's create a Cognito identity using the client_id of our managed identity.
-***
+
 ```
 aws cognito-identity get-open-id-token-for-developer-identity \
     --identity-pool-id us-east-1:59d4a12a-deaa-4a98-85d1-b5d9fc2d41ef  
